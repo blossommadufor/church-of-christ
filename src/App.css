@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&display=swap');
+
+:root{
+    --color-primary: #9B6325;
+    --color-secondary: #211A1A;
+    --color-light: #e5b049;
+}
+
+
+h1,h2,h3{
+    font-family: "Poppins", sans-serif;
+}
+
+p,li{
+    font-family: "Outfit", sans-serif;
+}
+

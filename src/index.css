@@ -1,0 +1,12 @@
+/* #9B6325- brown */
+/* #211A1A - dark brown */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@theme{
+    --color-primary: #9B6325;
+    --color-secondary: #211A1A;
+    --color-light: #e5b049;
+}
