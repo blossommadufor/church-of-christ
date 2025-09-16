@@ -2,10 +2,11 @@ import React from "react";
 import logo from "../../public/assets/logo3.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faYoutube } from "@fortawesome/free-brands-svg-icons";
+import { faEnvelope, faLocationDot, faPhone } from "@fortawesome/free-solid-svg-icons";
 
 const Footer = () => {
   return (
-    <div className="bg-primary py-16 md:px-20 gap-10 justify-center px-8">
+     <div className="bg-primary py-16 md:px-20 grid  xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-10 justify-center px-8">
       <div className="flex flex-col text-gray-200 items-center col-span-">
         <div>
           <img src={logo} alt="" className="w-20" />
@@ -34,7 +35,7 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* <div className="text-gray-200">
+      <div className="text-gray-200">
         <h3 className="pb-5 font-semibold text-lg text-cente">
           CHURCH ACTIVITIES
         </h3>
@@ -164,7 +165,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };

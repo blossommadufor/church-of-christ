@@ -1,0 +1,58 @@
+import React from 'react'
+import { motion } from "framer-motion";
+
+const container = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.3, // delay between children
+    },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: "easeOut" },
+  },
+};
+
+const ContactHero = () => {
+  return (
+    <div className="relative h-screen lg:max-h-[800px] max-h-[600px] bg-[url('/assets/hero.jpg')] bg-top bg-cover bg-no-repeat flex items-center justify-center pt-20">
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-[rgba(0,0,0,0.6)]"></div>
+    
+          {/* Content */}
+          <motion.div
+            className="relative w-full flex justify-center items-center px-6 text-center text-white z-10"
+            variants={container}
+            initial="hidden"
+            animate="visible"
+          >
+            <motion.div className="max-w-3xl" variants={container}>
+              <motion.h2
+                className="text-5xl font-bold mb-4 uppercase"
+                variants={item}
+              >
+                Contact Us
+              </motion.h2>
+              <motion.p className="mb-4 text-xl pt-5" variants={item}>
+                hurry hurray
+              </motion.p>
+              <motion.p
+                className="italic text-yellow-200 text-lg font-bold"
+                variants={item}
+              >
+                qwadfgnvm jkdjkf fkewjrio;jr poe2krifjh
+              </motion.p>
+            </motion.div>
+          </motion.div>
+        </div>
+  )
+}
+
+export default ContactHero

@@ -18,7 +18,6 @@ const Home = () => {
       <Sermons/>
       <Activities/>
       <Question/>
-      <Contact/>
       <Footer/>
     </div>
   )

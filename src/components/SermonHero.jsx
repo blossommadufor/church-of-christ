@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import { motion } from "framer-motion";
 
 const container = {
@@ -20,7 +20,7 @@ const item = {
   },
 };
 
-const AboutHero = () => {
+const SermonHero = () => {
   return (
     <div className="relative h-screen lg:max-h-[800px] max-h-[600px] bg-[url('/assets/hero.jpg')] bg-top bg-cover bg-no-repeat flex items-center justify-center pt-20">
       {/* Overlay */}
@@ -38,23 +38,21 @@ const AboutHero = () => {
             className="text-5xl font-bold mb-4 uppercase"
             variants={item}
           >
-            About
+            Sermons & Teachings
           </motion.h2>
           <motion.p className="mb-4 text-xl pt-5" variants={item}>
-            happy happy
+            Sermon sermon
           </motion.p>
           <motion.p
             className="italic text-yellow-200 text-lg font-bold"
             variants={item}
           >
-            qwadfgnvm
+            qwadfgnvm;olikuhgyfdxsgdhfjgkhlj
           </motion.p>
         </motion.div>
       </motion.div>
     </div>
-  );
-};
+  )
+}
 
-export default AboutHero;
-
-
+export default SermonHero

@@ -46,14 +46,14 @@ const Sermons = () => {
                 <p className="pb-3 text-gray-600 ">{item.text}</p>
               </div>
               <div className="border-t-2 pt-4 flex justify-end">
-                <button className="py-2 px-4 bg-light text-white hover:bg-primary  font-semibold">READ<FontAwesomeIcon icon={faArrowRight} className="pl-2"/></button>
+                <button className="py-2 px-4 bg-light text-white hover:bg-primary  font-semibold">Download</button>
               </div>
             </div>
           </div>
         ))}
       </div>
         <div className="pt-16 flex justify-center items-center">
-            <button className="py-3 px-7 rounded-2xl bg-primary text-white hover:bg-light hover:text-primary font-semibold text-xl">LOAD MORE</button>
+            <a href="/sermons"><button className="py-3 px-7 rounded-2xl bg-primary text-white hover:bg-light hover:text-primary font-semibold text-xl">LOAD MORE</button></a>
         </div>
     </div>
   );

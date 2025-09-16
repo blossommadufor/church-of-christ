@@ -13,9 +13,11 @@ const Question = () => {
           </p>
         </div>
       <div>
-        <button className="py-2 px-4 bg-light text-white hover:bg-primary  font-semibold">
-          ASK A QUESTION
+        <a href="/contact">
+          <button className="py-2 px-4 bg-light text-white hover:bg-primary font-semibold">
+          CONTACT US
         </button>
+        </a>
       </div>
       </div>
     </div>
