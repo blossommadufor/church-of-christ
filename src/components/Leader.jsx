@@ -46,7 +46,7 @@ const deacons = [
     },
 ]
 
-const Leaders = () => {
+const Leader = () => {
   return (
     <div className='lg:px-16 px-8 md:px-10 py-20 bg-yellow-100'>
       <div>
@@ -80,4 +80,4 @@ const Leaders = () => {
   )
 }
 
-export default Leaders
+export default Leader

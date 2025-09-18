@@ -7,6 +7,7 @@ import Header from '../components/Header'
 import Hero from '../components/Hero'
 import Question from '../components/Question'
 import Sermons from '../components/Sermons'
+import AboutIcons from '../components/AboutIcons'
 
 
 const Home = () => {
@@ -15,6 +16,7 @@ const Home = () => {
       <Header/>
       <Hero/>
       <About/>
+      <AboutIcons/>
       <Sermons/>
       <Activities/>
       <Question/>

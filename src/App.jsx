@@ -7,6 +7,11 @@ import Sermons from "./pages/Sermons";
 import Activities from "./pages/Activities";
 import Contact from "./pages/Contact";
 import Location from "./pages/Location";
+import History from "./pages/History";
+import Leaders from "./pages/Leaders";
+import Ministries from "./pages/Ministries";
+import Beliefs from "./pages/Belief";
+import Roasters from "./pages/Roasters";
 
 function App() {
   return (
@@ -20,6 +25,11 @@ function App() {
             <Route path="/activities" element={<Activities/>}/>
             <Route path="/contact" element={<Contact/>}/>
             <Route path="/location" element={<Location/>}/>
+            <Route path="/history" element={<History/>}/>
+            <Route path="/leaders" element={<Leaders/>}/>
+            <Route path="/ministries" element={<Ministries/>}/>
+            <Route path="/beliefs" element={<Beliefs/>}/>
+            <Route path="/roasters" element={<Roasters/>}/>
           </Route>
         </Routes>
       </Router>

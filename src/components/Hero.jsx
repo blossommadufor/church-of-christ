@@ -7,7 +7,7 @@ const slides = [
   {
     title: "The Church Of Christ Nyanya",
     text:
-      "Welcome to the official web directory of the church! Here, you'll find inspiring sermons, heartfelt teachings from our leaders, helpful Bible study plans, and soul-lifting hymns and songs from our worship. We’re glad you're here feel free to explore and be encouraged.",
+      "Welcome to the official web directory of the church! Here, you'll find inspiring sermons, heartfelt teachings from our leaders. We’re glad you're here feel free to explore and be encouraged.",
     verse: "...all the Churches of Christ salute you (Romans 16:16)",
   },
   {

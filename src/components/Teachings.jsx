@@ -41,17 +41,17 @@ const teachings = [
 
 const Teachings = () => {
   return (
-    <div className="bg-gray-100 px-16 py-20">
+    <div className="bg-gray-100 xl:px-16 lg:px-12 px-10 py-20">
       <div className="pb-16 text-center">
         <h2 className=" text-primary text-3xl md:text-4xl lg:text-5xl text-center font-bold pb-2">
         SUNDAY SCHOOL TEACHINGS
       </h2>
       <p className="text-light mt-2">Check out some of our Teachings as well.</p>
       </div>
-      <div className="grid grid-cols-2 gap-10">
+      <div className="grid lg:grid-cols-2 gap-10">
         {teachings.map((item, index) => (
           <div key={index} className="flex bg-white shadow-xl">
-            <div className="w-[30%]">
+            <div className="lg:w-[50%] md:w-[40%]">
               <img alt="" src={item.img}  className="h-full object-cover"/>
             </div>
             <div className="p-5">

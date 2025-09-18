@@ -23,14 +23,14 @@ const activities = [
 
 const Activities = () => {
   return (
-    <div className="relative bg-light px-12 lg:px-16 py-20"
+    <div className="relative bg-light lg:px-16 py-20"
     >
       <h2 className="pb-10 text-white text-3xl md:text-4xl lg:text-5xl text-center font-bold">
         CHURCH ACTIVITIES
       </h2>
 
-      <div className="flex justify-between gap-10 items-center">
-        <div className="w-[50%]">
+      <div className="flex flex-col lg:flex-row justify-between gap-10 items-center">
+        <div className="lg:w-[50%] grid md:grid-cols-2 lg:grid-cols-1">
           {activities.map((item, index) => (
             <div key={index} className="p-4">
               <div className="bg-gray-100 shadow-lg rounded-2xl px-6 py-10 flex flex-col lg:flex-row gap-5">
@@ -52,7 +52,7 @@ const Activities = () => {
             </div>
           ))}
         </div>
-        <div className="w-[50%]">
+        <div className="lg:w-[50%] px-8">
           <img src={activity} className="rounded-2xl"/>
         </div>
       </div>

@@ -109,13 +109,7 @@ const About = () => {
             Bible. We speak where the Bible speaks and are silent where the
             Bible is silent.
           </p>
-          <div>
-            <a href="/about">
-              <button className="bg-light text-white  py-2 px-6 rounded-3xl">
-                More about us
-              </button>
-            </a>
-          </div>
+          
         </motion.div>
 
         {/* RIGHT: slider */}
@@ -134,14 +128,14 @@ const About = () => {
                 index === current ? "opacity-100 z-10" : "opacity-0 z-0"
               }`}
             >
-              <div className="h-[65%] w-full">
+              <div className="lg:h-[65%] h-[60%] w-full">
                 <img
                   src={item.img}
                   alt={`Slide ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="h-[35%] w-full bg-primary text-white p-6">
+              <div className="lg:h-[35%] h-[40%] w-full bg-primary text-white p-6">
                 <p className="font-bold italic text-lg pb-3">{item.text}</p>
                 <p className="">{item.passage}</p>
               </div>

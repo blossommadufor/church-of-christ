@@ -45,7 +45,7 @@ const ActivitiesList = () => {
   ];
 
   return (
-    <div className=" px-16 py-20">
+    <div className="px-4 md:px-10 lg:px-16 py-20">
       <div className="pb-16 text-center">
         <h2 className=" text-primary text-3xl md:text-4xl lg:text-5xl text-center font-bold pb-2">
           CHURCH ACTIVITIES
@@ -54,7 +54,7 @@ const ActivitiesList = () => {
           Here are some of our activities blah blah blah......... for you to go through
         </p>
       </div>
-      <div className="grid grid-cols-2 gap-10">
+      <div className="grid md:grid-cols-2 gap-10">
         {activitiesItem.map((item, index) => (
           <div key={index} className="p-4">
             <div className="bg-gray-50 shadow-lg rounded-2xl px-6 py-10 flex flex-col lg:flex-row gap-5">
