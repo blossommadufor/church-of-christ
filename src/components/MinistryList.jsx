@@ -4,92 +4,92 @@ const MinistyList = () => {
   const men = [
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
   ];
   const women = [
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
   ];
 
   const envangelism = [
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
@@ -121,11 +121,11 @@ const MinistyList = () => {
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
     {
       img: "/assets/placeholder.jpg",
-      name: "Bischop Austin Ohaju",
+      name: "Bishop Austin Ohaju",
     },
   ];
 
@@ -142,12 +142,12 @@ const MinistyList = () => {
 
         <div className="grid lg:grid-cols-4 xl:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-10">
           {envangelism.map((item, index) => (
-            <div key={index} className="bg-yellow-50 shadow-xl">
+            <div key={index} className="bg-blue-100 shadow-xl">
               <div className="">
                 <img src={item.img} className="" />
               </div>
               <div className='py-4 px-2'>
-                <h3 className="text-xl text-center">{item.name}</h3>
+                <h3 className="text-lg text-center">{item.name}</h3>
               </div>
             </div>
           ))}
@@ -164,12 +164,12 @@ const MinistyList = () => {
 
         <div className="grid lg:grid-cols-4 xl:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-10">
           {men.map((item, index) => (
-            <div key={index} className="bg-yellow-50 shadow-xl">
+            <div key={index} className="bg-blue-100 shadow-xl">
               <div className="">
                 <img src={item.img} className="" />
               </div>
               <div className='py-4 px-2'>
-                <h3 className="text-xl text-center">{item.name}</h3>
+                <h3 className="text-lg text-center">{item.name}</h3>
               </div>
             </div>
           ))}
@@ -186,12 +186,12 @@ const MinistyList = () => {
 
         <div className="grid lg:grid-cols-4 xl:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-10">
           {women.map((item, index) => (
-            <div key={index} className="bg-yellow-50 shadow-xl">
+            <div key={index} className="bg-blue-100 shadow-xl">
               <div className="">
                 <img src={item.img} className="" />
               </div>
               <div className='py-4 px-2'>
-                <h3 className="text-xl text-center">{item.name}</h3>
+                <h3 className="text-lg text-center">{item.name}</h3>
               </div>
             </div>
           ))}

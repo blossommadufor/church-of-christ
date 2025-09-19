@@ -26,10 +26,9 @@ const sermons = [
 
 const Sermons = () => {
   return (
-    <div id="sermons" className=" py-20 lg:px-16 px-8 md:px-10 bg-gray-50">
+    <div id="sermons" className=" py-20 lg:px-16 px-8 md:px-10 bg-gray-300">
       <div className="flex flex-col items-center">
-      <img src={img} className="w-12 pb-5"/>
-        <h2 className="pb-16 text-primary text-3xl md:text-4xl lg:text-5xl text-center font-bold">
+        <h2 className="pb-16 text-secondary text-3xl md:text-4xl lg:text-5xl text-center font-bold">
         OUR RECENT SERMONS
       </h2>
       </div>

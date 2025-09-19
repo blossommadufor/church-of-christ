@@ -5,7 +5,7 @@ import React from "react";
 const AboutIcons = () => {
   return (
     <div className="relative bg-[url('/assets/hero2.jpeg')] bg-top bg-cover bg-no-repeat flex items-center justify-center h-screen lg:max-h-[600px] md:max-h-[530px] max-h-[760px]">
-      <div className="absolute inset-0 bg-[rgba(0,0,0,0.7)] flex flex-col md:flex-row justify-between items-center px-8 md:px-10 lg:px-16">
+      <div className="absolute inset-0 bg-[rgba(38,41,77,0.9)] flex flex-col md:flex-row justify-between items-center px-8 md:px-10 lg:px-16">
         <div className="md:w-[50%] lg:w-[5
         
         0%]">

@@ -135,7 +135,7 @@ const About = () => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="lg:h-[35%] h-[40%] w-full bg-primary text-white p-6">
+              <div className="lg:h-[35%] h-[40%] w-full bg-light text-white p-6">
                 <p className="font-bold italic text-lg pb-3">{item.text}</p>
                 <p className="">{item.passage}</p>
               </div>

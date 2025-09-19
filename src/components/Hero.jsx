@@ -69,7 +69,7 @@ const Hero = () => {
       className="relative h-screen lg:max-h-[800px] max-h-[600px] bg-[url('/assets/hero.jpg')] bg-top bg-cover bg-no-repeat flex items-center justify-center overflow-hidden pt-20"
     >
       {/* Overlay */}
-      <div className="absolute inset-0 bg-[rgba(0,0,0,0.6)]"></div>
+      <div className="absolute inset-0 bg-[rgba(38,41,77,0.7)]"></div>
 
       {/* Text content */}
       <motion.div
@@ -87,7 +87,7 @@ const Hero = () => {
           {slides[current].text}
         </motion.p>
 
-        <motion.p className="italic text-yellow-200 lg:text-lg font-bold" variants={item}>
+        <motion.p className="italic text-blue-300 lg:text-lg font-bold" variants={item}>
           {slides[current].verse}
         </motion.p>
       </motion.div>

@@ -23,7 +23,7 @@ const activities = [
 
 const Activities = () => {
   return (
-    <div className="relative bg-light lg:px-16 py-20"
+    <div className="relative bg-secondary lg:px-16 py-20"
     >
       <h2 className="pb-10 text-white text-3xl md:text-4xl lg:text-5xl text-center font-bold">
         CHURCH ACTIVITIES

@@ -6,7 +6,7 @@
 @tailwind utilities;
 
 @theme{
-    --color-primary: #9B6325;
-    --color-secondary: #211A1A;
-    --color-light: #e5b049;
+    --color-primary: #26294D;
+    --color-secondary: #282E63;
+    --color-light: #4663D8;
 }
