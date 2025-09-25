@@ -35,19 +35,19 @@ const SermonHero = () => {
       >
         <motion.div className="max-w-3xl" variants={container}>
           <motion.h2
-            className="text-5xl font-bold mb-4 uppercase"
+            className="md:text-5xl text-4xl font-bold mb-4 uppercase"
             variants={item}
           >
             Sermons & Teachings
           </motion.h2>
-          <motion.p className="mb-4 text-xl pt-5" variants={item}>
-            Sermon sermon
+          <motion.p className="mb-4 md:text-xl pt-5" variants={item}>
+            Here are the recent Sermons and Teachings of the church...
           </motion.p>
           <motion.p
-            className="italic text-blue-200 text-lg font-bold"
+            className="italic text-blue-200 lg:text-lg font-bold"
             variants={item}
           >
-            qwadfgnvm;olikuhgyfdxsgdhfjgkhlj
+            All the Churches of Christ salute you (Romans 16:16)
           </motion.p>
         </motion.div>
       </motion.div>

@@ -136,8 +136,7 @@ const MinistyList = () => {
           EVANGELISM MINISTRY
         </h2>
         <p className="mt-3 pb-16 text-light text-lg">
-          These are the members of oye evangelism ministry that blah blab blah
-          blah...................
+          These are the members of our evangelism ministry
         </p>
 
         <div className="grid lg:grid-cols-4 xl:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-10">
@@ -158,8 +157,7 @@ const MinistyList = () => {
           MEN MINISTRY
         </h2>
         <p className="mt-3 pb-16 text-light text-lg">
-          These are the members of our Men ministry that blah blab blah
-          blah....................
+          These are the members of our Men ministry
         </p>
 
         <div className="grid lg:grid-cols-4 xl:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-10">
@@ -180,8 +178,7 @@ const MinistyList = () => {
           WOMEN MINISTRY
         </h2>
         <p className="mt-3 pb-16 text-light text-lg">
-          These are the members of our Women ministry that blah blab blah
-          blah...................
+          These are the members of our Women ministry
         </p>
 
         <div className="grid lg:grid-cols-4 xl:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-10">

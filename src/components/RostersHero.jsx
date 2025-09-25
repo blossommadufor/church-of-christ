@@ -35,19 +35,19 @@ const RoastersHero = () => {
       >
         <motion.div className="max-w-3xl" variants={container}>
           <motion.h2
-            className="text-5xl font-bold mb-4 uppercase"
+            className="md:text-5xl text-4xl font-bold mb-4 uppercase"
             variants={item}
           >
             THE CHURCH'S ROASTERS
           </motion.h2>
-          <motion.p className="mb-4 text-xl pt-5" variants={item}>
-            hurry hurray
+          <motion.p className="mb-4 md:text-xl pt-5" variants={item}>
+            These ae the roasters for the month of October
           </motion.p>
           <motion.p
-            className="italic text-blue-200 text-lg font-bold"
+            className="italic text-blue-200 lg:text-lg font-bold"
             variants={item}
           >
-            qwadfgnvm jkdjkf fkewjrio;jr poe2krifjh
+            All the Churches of Christ salute you (Romans 16:16)
           </motion.p>
         </motion.div>
       </motion.div>

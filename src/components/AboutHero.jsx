@@ -47,7 +47,7 @@ const AboutHero = () => {
             className="italic text-blue-200 text-lg font-bold"
             variants={item}
           >
-            qwadfgnvm
+            All the Churches of Christ salute you (Romans 16:16)
           </motion.p>
         </motion.div>
       </motion.div>

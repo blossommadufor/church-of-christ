@@ -59,29 +59,7 @@ const About = () => {
   return (
     <div id="about" className="flex flex-col gap-20 px-8 md:px-10 lg:px-16 py-10 lg:py-20">
       {/* top features */}
-      <div className="grid md:grid-cols-3 gap-10">
-        {about.map((item, index) => (
-          <motion.div
-            key={index}
-            className="flex flex-col items-center text-center py-6 gap-6"
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            transition={{ duration: 0.6, delay: index * 0.2 }}
-            viewport={{ once: true }}
-          >
-            <div className="bg-light w-24 rounded-full">
-              <img src={item.icon} alt="" />
-            </div>
-            <div>
-              <h3 className="lg:text-3xl text-xl font-semibold pb-3 text-primary">
-                {item.title}
-              </h3>
-              <p className=" text-gray-800">{item.text}</p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      
 
       {/* main about section */}
       <div className="flex flex-col md:flex-row gap-10 lg:gap-20">
@@ -142,6 +120,29 @@ const About = () => {
             </div>
           ))}
         </motion.div>
+      </div>
+      <div className="grid md:grid-cols-3 gap-10">
+        {about.map((item, index) => (
+          <motion.div
+            key={index}
+            className="flex flex-col items-center text-center py-6 gap-6"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            transition={{ duration: 0.6, delay: index * 0.2 }}
+            viewport={{ once: true }}
+          >
+            <div className="bg-light w-24 rounded-full">
+              <img src={item.icon} alt="" />
+            </div>
+            <div>
+              <h3 className="lg:text-3xl text-xl font-semibold pb-3 text-primary">
+                {item.title}
+              </h3>
+              <p className=" text-gray-800">{item.text}</p>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </div>
   );

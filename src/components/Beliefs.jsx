@@ -3,7 +3,7 @@ import img from "../../public/assets/logo3.png";
 
 const Beliefs = () => {
   return (
-    <div className="py-20 lg:px-16 md:px-10 px-8">
+    <div className="py-20 xl:px-20 lg:px-14 md:px-10 px-8">
       <div className="flex flex-col lg:flex-row justify-between items-center gap-10 lg:gap-0 pb-20">
         <div className="lg:w-[50%] text-gray-700">
           <h2 className="text-4xl text-primary font-bold pb-4">
@@ -32,7 +32,7 @@ const Beliefs = () => {
             salvation without the salvation offered by Jesus.
           </p>
         </div>
-        <div className="md:w-[45%] flex justify-center">
+        <div className="md:w-[35%] flex justify-center items-center">
           <img src={img} alt="" />
         </div>
       </div>

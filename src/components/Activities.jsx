@@ -12,13 +12,13 @@ const activities = [
     time: "9:00 - 12:00",
   },
   {
-    icon: "/assets/wedding.svg",
-    activity: "Tuesday Youth Class",
-    teacher: "Brother Alex John",
-    topic: "Faith that moves mountains",
-    date: "18th September 2025",
-    time: "6:00 - 7:00",
-  },
+      icon: "/assets/wedding.svg",
+      activity: "General Bible Class",
+      teacher: "Guest Speaker",
+      topic: "Hope in Christ",
+      date: "Thursday 25th September 2025",
+      time: "6:00 - 7:00",
+    },
 ];
 
 const Activities = () => {
@@ -41,10 +41,10 @@ const Activities = () => {
                   <h3 className="lg:text-3xl text-xl font-semibold text-primary mb-2">
                     {item.activity}
                   </h3>
-                  <p className="text-lg font-semibold text-gray-700">
+                  <p className="text-gray-600 text-xl font-semibold">{item.topic}</p>
+                  <p className="font-semibol text-gray-700">
                     {item.teacher}
                   </p>
-                  <p className="text-gray-600 text-xl">{item.topic}</p>
                   <p className="text-sm text-gray-500 mt-2">{item.date}</p>
                   <p className="text-sm text-gray-500">{item.time}</p>
                 </div>

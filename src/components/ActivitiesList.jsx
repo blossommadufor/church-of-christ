@@ -51,7 +51,7 @@ const ActivitiesList = () => {
           CHURCH ACTIVITIES
         </h2>
         <p className="text-light mt-2">
-          Here are some of our activities blah blah blah......... for you to go through
+          Here are all the weekly activities of the church
         </p>
       </div>
       <div className="grid md:grid-cols-2 gap-10">
@@ -65,10 +65,10 @@ const ActivitiesList = () => {
                 <h3 className="lg:text-3xl text-xl font-semibold text-primary mb-2">
                   {item.activity}
                 </h3>
-                <p className="text-lg font-semibold text-gray-700">
+                <p className="text-gray-600 text-xl font-semibold">{item.topic}</p>
+                <p className="text-gray-700">
                   {item.teacher}
                 </p>
-                <p className="text-gray-600 text-xl">{item.topic}</p>
                 <p className="text-sm text-gray-500 mt-2">{item.date}</p>
                 <p className="text-sm text-gray-500 mt-1">{item.time}</p>
               </div>

@@ -15,7 +15,7 @@ const AboutIcons = () => {
           </p>
           <div className="mt-6 lg:mt-10">
             <a href="/beliefs">
-              <button className="bg-light text-white  py-2 px-6 rounded-3xl">
+              <button className="bg-light text-white py-3 px-6 rounded-3xl hover:bg-white hover:text-primary md:text-xl">
                 More about us
               </button>
             </a>
