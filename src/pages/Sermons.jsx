@@ -9,7 +9,7 @@ const Sermons = () => {
     <div>
       <SermonHero/>
       <SermonList/>
-      <Teachings/>
+      {/* <Teachings/> */}
       <Footer/>
     </div>
   )
