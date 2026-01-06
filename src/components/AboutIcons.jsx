@@ -9,7 +9,7 @@ const AboutIcons = () => {
         <div className="md:w-[50%] lg:w-[5
         
         0%]">
-          <h2 className="xl:text-5xl lg:text-4xl md:text-3xl text-2xl mt-12 md:mt-0 lg:mt-12 text-gray-200 font-semibold uppercase">JOIN US FOR A FULL EXPERIENCE OF GOD'S PRESENCE AND POWER</h2>
+          <h2 className="xl:text-5xl lg:text-4xl md:text-3xl text-2xl mt-12 md:mt-0 lg:mt-12 text-gray-200 font-semibold uppercase">JOIN US FOR WORSHIP</h2>
           <p className="font-semibold lg:text-lg mt-6 lg:mt-10 text-gray-200">
             We believe in the power of worship to lift burdens, the Word of God to renew minds, and prayer to bring healing and breakthrough. We believe in fellowship that strenghtens hearts and in the Holy Spirit's presence that changes everything
           </p>

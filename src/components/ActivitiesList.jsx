@@ -7,40 +7,56 @@ const ActivitiesList = () => {
       activity: "Sunday Worship",
       teacher: "Preachers",
       topic: "God's unfailing love",
-      date: "14th September 2025",
-      time: "9:00 - 12:00",
+      date: "every Sunday",
+      time: "9:00AM - 12:00PM",
     },
     {
       icon: "/assets/wedding.svg",
       activity: "Tuesday Youth Class",
       teacher: "Brother Alex John",
       topic: "Faith that moves mountains",
-      date: "18th September 2025",
-      time: "6:00 - 7:00",
+      date: "Every Tuesday",
+      time: "6:00PM - 7:00PM",
     },
     {
       icon: "/assets/wedding.svg",
       activity: "Tuesday Song Practice",
       teacher: "Bro Tom Jerry",
       topic: "Living for Christ",
-      date: "20th September 2025",
-      time: "7:00 - 8:00",
+      date: "Every Tuesday",
+      time: "7:00PM - 8:00PM",
     },
     {
       icon: "/assets/wedding.svg",
       activity: "Thursday Sister Class",
       teacher: "Sis Looney Tunes",
       topic: "Power in Prayer",
-      date: "22nd September 2025",
-      time: "5:00 - 6:00",
+      date: "Every Thursday",
+      time: "5:00PM - 6:00PM",
     },
     {
       icon: "/assets/wedding.svg",
       activity: "General Bible Class",
       teacher: "Guest Speaker",
       topic: "Hope in Christ",
-      date: "Thursday 25th September 2025",
-      time: "6:00 - 7:00",
+      date: "Every Thursday",
+      time: "6:00PM - 7:00PM",
+    },
+    {
+      icon: "/assets/wedding.svg",
+      activity: "Evangelism",
+      teacher: "Guest Speaker",
+      topic: "Hope in Christ",
+      date: "Every 2nd Saturday",
+      time: "10:00AM - 12:00PM",
+    },
+    {
+      icon: "/assets/wedding.svg",
+      activity: "Fasting & Prayers",
+      teacher: "Guest Speaker",
+      topic: "Hope in Christ",
+      date: "Every 1st Saturday",
+      time: "6:00AM - 1:00PM",
     },
   ];
 
@@ -65,12 +81,8 @@ const ActivitiesList = () => {
                 <h3 className="lg:text-3xl text-xl font-semibold text-primary mb-2">
                   {item.activity}
                 </h3>
-                <p className="text-gray-600 text-xl font-semibold">{item.topic}</p>
-                <p className="text-gray-700">
-                  {item.teacher}
-                </p>
-                <p className="text-sm text-gray-500 mt-2">{item.date}</p>
-                <p className="text-sm text-gray-500 mt-1">{item.time}</p>
+                <p className="text-lg text-gray-500 mt-2">{item.date}</p>
+                <p className="text-sm text-gray-500 mt-2">{item.time}</p>
               </div>
             </div>
           </div>

@@ -8,6 +8,7 @@ import Hero from '../components/Hero'
 import Question from '../components/Question'
 import Sermons from '../components/Sermons'
 import AboutIcons from '../components/AboutIcons'
+import Salvation from '../components/Salvation'
 
 
 const Home = () => {
@@ -19,6 +20,7 @@ const Home = () => {
       <AboutIcons/>
       <Sermons/>
       <Activities/>
+      <Salvation/>
       <Question/>
       <Footer/>
     </div>
