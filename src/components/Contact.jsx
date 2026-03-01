@@ -9,8 +9,8 @@ import React from "react";
 
 const Contact = () => {
   return (
-    <div className="py-20 lg:px-16 md:px-10 px-7">
-      <div id="contact">
+    <div>
+      <div id="contact" className="wrap py-20">
         <h2 className="pb-16 text-primary text-4xl lg:text-5xl font-bold">
           JOIN US IN WORSHIP
         </h2>
@@ -27,7 +27,7 @@ const Contact = () => {
               />
             </div>
 
-            <div className="flex gap-5 w-full ">
+            <div className="flex flex-col sm:flex-row gap-5 w-full">
               <div className="flex-1">
                 <input
                   type="email"
@@ -67,10 +67,10 @@ const Contact = () => {
               />
             </div>
 
-            <div className="flex justify-center">
+            <div>
               <button
                 type="submit"
-                className="bg-primary text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:border-2 border-light transition duration-300"
+                className="w-full bg-primary text-white font-semibold py-3 px-10 rounded-lg shadow-md hover:border-2 border-light transition duration-300"
               >
                 Submit
               </button>

@@ -1,137 +1,83 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
-
-const slides = [
-  {
-    title: "The Church Of Christ Nyanya",
-    text: "Welcome to the official web directory of the church! Here, you'll find inspiring sermons, heartfelt teachings from our leaders. We're glad you're here feel free to explore and be encouraged.",
-    verse: "All the Churches of Christ salute you (Romans 16:16)",
-    bg: "/assets/hero.jpg",
-  },
-  {
-    title: "2The Church Of Christ Nyanya",
-    text: "This is the official web directory of the church...",
-    verse: "All the Churches of Christ salute you (Romans 16:16)",
-    bg: "/assets/hero2.jpeg",
-  },
-  {
-    title: "3The Church Of Christ Nyanya",
-    text: "This is the official web directory of the church...",
-    verse: "All the Churches of Christ salute you (Romans 16:16)",
-    bg: "/assets/hero3.jpg",
-  },
-];
+import { Link } from "react-router-dom";
 
 const container = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.25 },
+    transition: { staggerChildren: 0.3 },
   },
 };
 
 const item = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 1.5 } },
+  visible: { opacity: 1, y: 0, transition: { duration: 1.2 } },
 };
 
-const AUTO_DELAY_MS = 8000;
-
 const Hero = () => {
-  const [current, setCurrent] = useState(0);
-  const intervalRef = useRef(null);
-
-  const goNext = () => {
-    setCurrent((prev) => (prev + 1) % slides.length);
-    resetInterval();
-  };
-
-  const goPrev = () => {
-    setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
-    resetInterval();
-  };
-
-  const resetInterval = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slides.length);
-    }, AUTO_DELAY_MS);
-  };
-
-  useEffect(() => {
-    resetInterval();
-    return () => clearInterval(intervalRef.current);
-  }, []);
-
   return (
     <div
       id="home"
-      className="relative h-screen lg:max-h-[800px] max-h-[600px] bg-top bg-cover bg-no-repeat flex items-center justify-center overflow-hidden pt-20 transition-all duration-700"
-      style={{
-        backgroundImage: `url(${slides[current].bg})`,
-      }}
+      className="relative h-screen min-h-[700px] bg-top bg-cover bg-no-repeat flex items-center justify-center overflow-hidden pt-20"
+      style={{ backgroundImage: "url(/assets/hero.jpg)" }}
     >
       {/* Overlay */}
-      <div className="absolute inset-0 bg-[rgba(38,41,77,0.7)]"></div>
+      <div className="absolute inset-0 bg-[rgba(15,20,50,0.72)]" />
 
-      <div>
-        {/* Text content */}
+      {/* Content */}
+      <motion.div
+        className="relative z-10 max-w-4xl text-center text-white px-6 md:px-16 lg:px-8"
+        variants={container}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Tag line */}
+        <motion.p
+          className="uppercase tracking-[0.3em] text-blue-300 text-sm md:text-base font-semibold mb-5"
+          variants={item}
+        >
+          All the Churches of Christ salute you — Romans 16:16
+        </motion.p>
+
+        {/* Main heading */}
+        <motion.h1
+          className="md:text-5xl text-4xl xl:text-6xl lg:text-5xl font-semibold xl:leading-[1.3] mb-6"
+          variants={item}
+        >
+          <span>Built on the Word.{" "}</span>
+          <span className="text-blue-300">Rooted in Christ.</span>{" "}
+          <span>Reaching the Lost.</span>
+        </motion.h1>
+
+        {/* Sub text */}
+        <motion.p
+          className="text-gray-300 md:text-xl text-base leading-relaxed max-w-2xl mx-auto mb-10"
+          variants={item}
+        >
+          The Church of Christ, Nyanya — a community of believers committed to
+          New Testament Christianity, worshipping God in spirit and in truth.
+        </motion.p>
+
+        {/* CTA Buttons */}
         <motion.div
-          key={current}
-          className="max-w-3xl text-center text-white relative z-10 md:px-24 px-20 lg:px-6"
-          variants={container}
-          initial="hidden"
-          animate="visible"
+          className="flex flex-col sm:flex-row gap-4 justify-center"
+          variants={item}
         >
-          <motion.h2
-            className="lg:text-5xl text-3xl font-bold mb-4"
-            variants={item}
-          >
-            {slides[current].title}
-          </motion.h2>
-
-          <motion.p className="mb-4 md:text-xl pt-5" variants={item}>
-            {slides[current].text}
-          </motion.p>
-
-          <motion.p
-            className="italic text-blue-300 lg:text-lg font-bold"
-            variants={item}
-          >
-            {slides[current].verse}
-          </motion.p>
+          <Link to="/about">
+            <button className="py-4 px-8 bg-light border-2 border-light text-white text-base sm:text-lg font-semibold rounded-full hover:bg-blue-400 hover:border-blue-400 transition-all duration-300 shadow-lg hover:shadow-blue-400/40 hover:scale-105">
+              Learn More
+            </button>
+          </Link>
+          <Link to="/contact">
+            <button className="py-4 px-8 bg-white/10 border-2 border-white text-white text-base sm:text-lg font-semibold rounded-full hover:bg-white hover:text-primary transition-all duration-300 backdrop-blur-sm hover:scale-105">
+              Contact Us
+            </button>
+          </Link>
         </motion.div>
-
-        {/* Left Arrow */}
-        <button
-          onClick={goPrev}
-          className="absolute left-7 lg:left-20 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white p-3 rounded-full z-20 md:w-12 md:h-12 w-10 flex items-center justify-center h-10"
-        >
-          <FontAwesomeIcon
-            icon={faChevronLeft}
-            className="w-3 text-primary text-2xl"
-          />
-        </button>
-
-        {/* Right Arrow */}
-        <button
-          onClick={goNext}
-          className="absolute right-7 lg:right-20 top-1/2 -translate-y-1/2 hover:bg-white/40 bg-white/20 text-white p-3 rounded-full z-20 md:w-12 md:h-12 w-10 flex items-center justify-center h-10"
-        >
-          <FontAwesomeIcon
-            icon={faChevronRight}
-            className="w-3 text-primary text-2xl"
-          />
-        </button>
-      </div>
+      </motion.div>
     </div>
   );
 };
 
 export default Hero;
-

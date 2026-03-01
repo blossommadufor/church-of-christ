@@ -1,59 +1,65 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import SermonCard from "./SermonCard";
+import { motion } from "framer-motion";
 
 const sermons = [
   {
     img: "/assets/sermons.jpg",
     title: "All that you need to know about God's love",
-    preacher: 'Bro Tom Daniel',
-    date:"Nov 21st 2024"
+    preacher: "Bro Tom Daniel",
+    date: "Nov 21st 2024",
   },
   {
     img: "/assets/sermons.jpg",
-    title: "All that you need to know about God's love",
-    preacher: 'Bro Tom Daniel',
-    date:"Nov 21st 2024"
+    title: "Walking by Faith and Not by Sight",
+    preacher: "Bro Emeka Okafor",
+    date: "Dec 8th 2024",
   },
   {
     img: "/assets/sermons.jpg",
-    title: "All that you need to know about God's love",
-    preacher: 'Bro Tom Daniel',
-    date:"Nov 21st 2024"
+    title: "The Power of the Blood of Jesus Christ",
+    preacher: "Bro Samuel Adeyemi",
+    date: "Jan 5th 2025",
   },
 ];
 
 const Sermons = () => {
   return (
-    <div id="sermons" className=" py-20 lg:px-16 px-8 md:px-10 bg-white">
-      <div className="flex flex-col items-center">
-        <h2 className="pb-16 text-secondary text-3xl md:text-4xl lg:text-5xl text-center font-bold">
-        OUR RECENT SERMONS
-      </h2>
-      </div>
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
-        {sermons.map((item, index) => (
-          <div key={index} className="shadow-xl rounded-xl">
-            <div className="h-[200px]">
-              <img src={item.img} alt="" className="h-full w-full object-cover rounded-t-xl"/>
-            </div>
-            <div className="px-5 py-6 rounded-b-xl bg-white">
-              <div className="">
-              <p className="text-gray-400 text-xs pb-2">{item.date}</p>
-                <h3 className="text-primary text-xl pb-2 font-bold">{item.title}</h3>
-                <p className="pb-3 text-gray-600 md:text-lg">{item.preacher}</p>
-              </div>
-              <div className="border-t-2 pt-4 flex justify-end">
-                <button className="py-2 px-4 bg-light text-white hover:bg-primary  font-semibold">Download</button>
-              </div>
-            </div>
+    <div id="sermons" className="bg-white py-20">
+      <div className="wrap">
+        {/* Section header row */}
+        <div className="flex items-center justify-between mb-12">
+          <div>
+            <p className="text-light uppercase tracking-widest text-base font-bold mb-1">
+              Messages
+            </p>
+            <h2 className="text-secondary text-3xl md:text-4xl xl:text-5xl lg:text-4xl font-bold">
+              RECENT SERMONS
+            </h2>
           </div>
-        ))}
-      </div>
-        <div className="pt-16 flex justify-center items-center">
-            <a href="/sermons"><button className="py-3 px-7 rounded-2xl bg-secondary text-white hover:bg-light hover:text-primary font-semibold text-xl">VIEW ALL</button></a>
+          <Link to="/sermons">
+            <button className="py-2 px-5 rounded-full border-2 border-secondary text-secondary hover:bg-secondary hover:text-white font-semibold text-base transition-all duration-200 whitespace-nowrap">
+              View All →
+            </button>
+          </Link>
         </div>
+
+        {/* Sermon cards grid */}
+        <motion.div
+          className="grid lg:grid-cols-3 md:grid-cols-2 gap-8"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          {sermons.map((item, index) => (
+            <SermonCard key={index} {...item} />
+          ))}
+        </motion.div>
+      </div>
     </div>
   );
 };
 
 export default Sermons;
-

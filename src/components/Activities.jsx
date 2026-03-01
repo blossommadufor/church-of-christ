@@ -1,97 +1,115 @@
 import React from "react";
-// import activity from '../../public/assets/about2.jpg'
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCalendarAlt,
+  faClock,
+  faBookOpen,
+  faUsers,
+  faChurch,
+} from "@fortawesome/free-solid-svg-icons";
 
 const activities = [
   {
-    icon: "/assets/wedding.svg",
+    icon: faChurch,
     activity: "Sunday Worship",
+    description: "Join us every Lord's Day as we gather to worship God in spirit and in truth through singing, praying, the Lord's Supper, giving, and the preaching of His Word.",
     date: "Every Sunday",
-    time: "9:00AM - 12:00PM",
+    time: "9:00AM – 12:00PM",
+    color: "bg-blue-500",
   },
   {
-      icon: "/assets/wedding.svg",
-      activity: "General Bible Class",
-      date: " Every Thursday",
-      time: "6:00PM - 7:00PM",
-    },
-    {
-      icon: "/assets/wedding.svg",
-      activity: "Evangelism",
-      teacher: "Guest Speaker",
-      topic: "Hope in Christ",
-      date: "Every 2nd Saturday",
-      time: "10:00AM - 12:00PM",
-    },
-    {
-      icon: "/assets/wedding.svg",
-      activity: "Fasting & Prayers",
-      teacher: "Guest Speaker",
-      topic: "Hope in Christ",
-      date: "Every 1st Saturday",
-      time: "6:00AM - 1:00PM",
-    },
-    {
-      icon: "/assets/wedding.svg",
-      activity: "Tuesday Youth Class",
-      teacher: "Brother Alex John",
-      topic: "Faith that moves mountains",
-      date: "Every Tuesday",
-      time: "6:00PM - 7:00PM",
-    },
-    {
-      icon: "/assets/wedding.svg",
-      activity: "Tuesday Song Practice",
-      teacher: "Bro Tom Jerry",
-      topic: "Living for Christ",
-      date: "Every Tuesday",
-      time: "7:00PM - 8:00PM",
-    },
-    {
-      icon: "/assets/wedding.svg",
-      activity: "Thursday Sister Class",
-      teacher: "Sis Looney Tunes",
-      topic: "Power in Prayer",
-      date: "Every Thursday",
-      time: "5:00PM - 6:00PM",
-    },
+    icon: faBookOpen,
+    activity: "Thursday Bible Study",
+    description: "A mid-week study of the Scriptures open to all members and visitors. We dig deeper into God's Word together to strengthen our faith and understanding.",
+    date: "Every Thursday",
+    time: "6:00PM – 7:00PM",
+    color: "bg-indigo-500",
+  },
+  {
+    icon: faUsers,
+    activity: "Youth Class",
+    description: "A dedicated class for the youth of the congregation, guiding the next generation in the ways of the Lord through sound teaching and fellowship.",
+    date: "Every Tuesday",
+    time: "6:00PM – 7:00PM",
+    color: "bg-violet-500",
+  },
 ];
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0 },
+};
 
 const Activities = () => {
   return (
-    <div className="relative bg-secondary md:px-5git push lg:px-16 py-20"
-    >
-      <h2 className="pb-10 text-white text-3xl md:text-4xl lg:text-5xl text-center font-bold">
-        CHURCH ACTIVITIES
-      </h2>
+    <div className="bg-secondary py-24 lg:py-32">
+      <div className="wrap">
+        {/* Section header row */}
+        <div className="flex items-center justify-between mb-12">
+          <div>
+            <p className="text-blue-300 uppercase tracking-widest text-base font-bold mb-1">
+              Schedule
+            </p>
+            <h2 className="text-white text-3xl md:text-4xl xl:text-5xl lg:text-4xl font-bold uppercase">
+              Church Activities
+            </h2>
+          </div>
+          <Link to="/activities">
+            <button className="py-2 px-5 rounded-full border-2 border-white text-white hover:bg-white hover:text-secondary font-semibold text-base transition-all duration-200 whitespace-nowrap">
+              View More →
+            </button>
+          </Link>
+        </div>
 
-      {/* <div className="flex flex-col lg:flex-row justify-between gap-10 items-center"> */}
-        <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-5">
+        {/* Activity Cards */}
+        <div className="grid md:grid-cols-3 gap-6">
           {activities.map((item, index) => (
-            <div key={index} className="p-4">
-              <div className="bg-gray-50 shadow-lg rounded-2xl px-6 py-10 flex flex-col gap-4">
-                <div className="border-2 w-16 h-16 rounded-full flex items-center justify-center bg-primary flex-shrink-0">
-                  <img src={item.icon} className="w-10" />
-                </div>
-                <div>
-                  <h3 className="lg:text-2xl text-xl font-semibold text-primary mb-2">
+            <motion.div
+              key={index}
+              className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              transition={{ duration: 0.5, delay: index * 0.15 }}
+              viewport={{ once: true }}
+            >
+              {/* Color accent bar */}
+              <div className={`${item.color} h-2 w-full`} />
+
+              <div className="p-6 flex flex-col gap-4">
+                {/* Icon + Title */}
+                <div className="flex items-center gap-4">
+                  <div className={`${item.color} w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md`}>
+                    <FontAwesomeIcon icon={item.icon} className="text-white text-xl" />
+                  </div>
+                  <h3 className="text-primary text-lg font-bold leading-tight">
                     {item.activity}
                   </h3>
-                  <p className="text-lg text-gray-500 mt-2">{item.date}</p>
-                  <p className="text-sm text-gray-500 mt-2">{item.time}</p>
+                </div>
+
+                {/* Description */}
+                <p className="text-gray-600 text-base leading-relaxed">
+                  {item.description}
+                </p>
+
+                {/* Date & Time */}
+                <div className="border-t border-gray-100 pt-4 flex flex-col gap-2">
+                  <div className="flex items-center gap-2 text-gray-500 text-base">
+                    <FontAwesomeIcon icon={faCalendarAlt} className="text-light w-4" />
+                    <span>{item.date}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-500 text-base">
+                    <FontAwesomeIcon icon={faClock} className="text-light w-4" />
+                    <span>{item.time}</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-        {/* <div className="lg:w-[50%] px-8">
-          <img src={activity} className="rounded-2xl"/>
-        </div> */}
-      {/* </div> */}
-
-      <div className="pt-16 flex justify-center items-center">
-            <a href="/activities"><button className="py-3 px-7 rounded-2xl bg-primary text-white hover:bg-white hover:text-primary font-semibold text-xl">MORE ACTIVITIES </button></a>
-        </div>
+      </div>
     </div>
   );
 };

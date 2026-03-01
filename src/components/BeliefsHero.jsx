@@ -22,7 +22,7 @@ const item = {
 
 const BeliefsHero = () => {
   return (
-    <div className="relative h-screen lg:max-h-[800px] max-h-[600px] bg-[url('/assets/hero.jpg')] bg-top bg-cover bg-no-repeat flex items-center justify-center pt-20">
+    <div className="relative max-h-[680px] bg-[url('/assets/hero.jpg')] bg-top bg-cover bg-no-repeat flex items-center justify-center pt-20">
       {/* Overlay */}
       <div className="absolute inset-0 bg-[rgba(38,41,77,0.7)]"></div>
 

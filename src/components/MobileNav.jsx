@@ -1,4 +1,4 @@
-import { faChevronDown, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import logo from "../../public/assets/logo3.png";
@@ -22,54 +22,9 @@ export default function MobileNav({ toggle }) {
             <li>
               <a href="/">HOME</a>
             </li>
-            <li className="relative group">
-                          <button className="cursor-pointer">
-                            ABOUT
-                            <FontAwesomeIcon icon={faChevronDown} className="ml-1" />
-                          </button>
-                          <ul className="absolute top-full left-0 mt-2 bg-white shadow-lg w-60 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 text-gray-700">
-                            <li className="border-b border-gray-200 text-sm">
-                              <a
-                                href="/history"
-                                className="py-4 block px-4 py-2 hover:bg-gray-100"
-                              >
-                                OUR HISTORY
-                              </a>
-                            </li>
-                            <li className="border-b border-gray-200 text-sm">
-                              <a
-                                href="/beliefs"
-                                className="py-4 block px-4 py-2 hover:bg-gray-100"
-                              >
-                                WHAT WE BELIEVE
-                              </a>
-                            </li>
-                            <li className="border-b border-gray-200 text-sm">
-                              <a
-                                href="/leaders"
-                                className="py-4 block px-4 py-2 hover:bg-gray-100"
-                              >
-                                ELDERS & DEACONS
-                              </a>
-                            </li>
-                            <li className="border-b border-gray-200 text-sm">
-                              <a
-                                href="/ministries"
-                                className="py-4 block px-4 py-2 hover:bg-gray-100"
-                              >
-                                OUR MINISTRIES
-                              </a>
-                            </li>
-                            <li className="border-b border-gray-200 text-sm">
-                              <a
-                                href="/roasters"
-                                className="py-4 block px-4 py-2 hover:bg-gray-100"
-                              >
-                                ROASTERS
-                              </a>
-                            </li>
-                          </ul>
-                        </li>
+            <li>
+              <a href="/about">ABOUT</a>
+            </li>
             <li>
               <a href="/sermons">SERMONS</a>
             </li>
@@ -80,7 +35,7 @@ export default function MobileNav({ toggle }) {
               <a href="/contact">CONTACT</a>
             </li>
             <li>
-              <a href="/location">LOCATION</a>
+              <a href="/members">MEMBERS</a>
             </li>
           </ul>
         </div>

@@ -1,16 +1,18 @@
 import React from 'react'
+import Header from '../components/Header'
 import SermonHero from '../components/SermonHero'
 import SermonList from '../components/SermonList'
-import Teachings from '../components/Teachings'
+import CTA from '../components/CTA'
 import Footer from '../components/Footer'
 
 const Sermons = () => {
   return (
     <div>
-      <SermonHero/>
-      <SermonList/>
-      {/* <Teachings/> */}
-      <Footer/>
+      <Header />
+      <SermonHero />
+      <SermonList />
+      <CTA />
+      <Footer />
     </div>
   )
 }
