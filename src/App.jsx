@@ -4,6 +4,7 @@ import Layout from "./Layout";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Sermons from "./pages/Sermons";
+import SermonDetail from "./pages/SermonDetail";
 import Activities from "./pages/Activities";
 import Contact from "./pages/Contact";
 import Location from "./pages/Location";
@@ -32,6 +33,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/sermons" element={<Sermons />} />
+            <Route path="/sermons/:id" element={<SermonDetail />} />
             <Route path="/activities" element={<Activities />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/location" element={<Location />} />

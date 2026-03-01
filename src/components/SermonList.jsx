@@ -144,8 +144,8 @@ const SermonList = () => {
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
                   className={`px-4 py-1.5 rounded-full text-base font-semibold border transition-all duration-200 ${activeCategory === cat
-                      ? "bg-light text-white border-light"
-                      : "bg-white text-gray-600 border-gray-200 hover:border-light hover:text-light"
+                    ? "bg-light text-white border-light"
+                    : "bg-white text-gray-600 border-gray-200 hover:border-light hover:text-light"
                     }`}
                 >
                   {cat}
@@ -204,6 +204,7 @@ const SermonList = () => {
                   title={sermon.title}
                   preacher={sermon.preacher}
                   date={sermon.date}
+                  id={sermon.id}
                 />
               </motion.div>
             ))}

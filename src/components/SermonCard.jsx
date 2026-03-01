@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const SermonCard = ({ img, title, preacher, date }) => {
+const SermonCard = ({ id, img, title, preacher, date }) => {
     return (
         <div className="shadow-xl rounded-xl overflow-hidden group flex flex-col">
             {/* Image */}
@@ -24,7 +24,7 @@ const SermonCard = ({ img, title, preacher, date }) => {
 
                 {/* Button pinned to the bottom */}
                 <div className="border-t-2 pt-4 flex justify-end mt-auto">
-                    <Link to="/sermons">
+                    <Link to={`/sermons/${id}`}>
                         <button className="py-2 px-5 bg-light text-white hover:bg-primary font-semibold rounded transition-colors duration-200">
                             View
                         </button>

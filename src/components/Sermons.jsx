@@ -5,18 +5,21 @@ import { motion } from "framer-motion";
 
 const sermons = [
   {
+    id: 1,
     img: "/assets/sermons.jpg",
     title: "All that you need to know about God's love",
     preacher: "Bro Tom Daniel",
     date: "Nov 21st 2024",
   },
   {
+    id: 2,
     img: "/assets/sermons.jpg",
     title: "Walking by Faith and Not by Sight",
     preacher: "Bro Emeka Okafor",
     date: "Dec 8th 2024",
   },
   {
+    id: 3,
     img: "/assets/sermons.jpg",
     title: "The Power of the Blood of Jesus Christ",
     preacher: "Bro Samuel Adeyemi",
