@@ -4,7 +4,7 @@ const Map = () => {
   return (
     <div>
       <div id="location" className="w-full h-[600px] pt-20">
-        <h2 className="md:pb-16 pb-10 text-primary text-4xl lg:text-5xl font-bold text-center">
+        <h2 className="md:pb-16 pb-10 px-5 text-primary text-3xl md:text-4xl lg:text-5xl font-bold text-center">
           FIND US ON GOOGLE MAPS
         </h2>
         <iframe

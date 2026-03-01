@@ -60,7 +60,7 @@ const AboutLeaders = () => {
                     </div>
 
                     {/* 3 top */}
-                    <div className="max-w-[640px] mx-auto grid grid-cols-2 sm:grid-cols-3 gap-5 justify-items-center mb-12">
+                    <div className="max-w-[640px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 justify-items-center mb-12">
                         {elders.slice(0, 3).map((elder, i) => (
                             <LeadershipItem key={i} name={elder.name} img={elder.img} index={i} />
                         ))}
@@ -84,7 +84,7 @@ const AboutLeaders = () => {
                         </h2>
                     </div>
                     {/* 3 top */}
-                    <div className="max-w-[640px] mx-auto grid grid-cols-2 sm:grid-cols-3 gap-5 justify-items-center mb-12">
+                    <div className="max-w-[640px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 justify-items-center mb-12">
                         {deacons.slice(0, 3).map((deacon, i) => (
                             <LeadershipItem key={i} name={deacon.name} img={deacon.img} index={i} />
                         ))}

@@ -22,11 +22,13 @@ import AdminMembers from "./pages/admin/AdminMembers";
 import AdminMemberDetail from "./pages/admin/AdminMemberDetail";
 import AdminGuard from "./utils/AdminGuard";
 import AdminAttendance from "./pages/admin/AdminAttendance";
+import ScrollToTop from "./utils/ScrollToTop";
 
 function App() {
   return (
     <>
       <Router>
+        <ScrollToTop />
         <Routes>
           {/* Public site */}
           <Route path="/" element={<Layout />}>
