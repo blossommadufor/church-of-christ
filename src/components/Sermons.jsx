@@ -32,7 +32,7 @@ const Sermons = () => {
     <div id="sermons" className="bg-white py-20">
       <div className="wrap">
         {/* Section header row */}
-        <div className="flex items-center justify-between mb-12">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-0 mb-12">
           <div>
             <p className="text-light uppercase tracking-widest text-base font-bold mb-1">
               Messages

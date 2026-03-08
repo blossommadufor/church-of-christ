@@ -32,7 +32,7 @@ const ThoughtsOfTheWeek = () => {
                         <h2 className="text-white font-serif italic xl:text-2xl lg:text-xl md:text-lg text-base leading-tight mb-6 drop-shadow-lg">
                             "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life."
                         </h2>
-                        <p className="text-gray-300 text-lg font-semibold mb-8">
+                        <p className="text-gray-300 text-sm md:text-base xl:text-lg font-semibold mb-8">
                             — John 3:16
                         </p>
 

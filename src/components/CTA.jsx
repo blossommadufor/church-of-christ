@@ -60,20 +60,20 @@ const CTA = () => {
 
                     {/* CTA Buttons — 2 buttons, icons only */}
                     <motion.div
-                        className="flex flex-col sm:flex-row gap-4 justify-center"
+                        className="flex flex-row gap-3 sm:gap-4 justify-center"
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.3 }}
                         viewport={{ once: true }}
                     >
-                        <Link to="/contact">
-                            <button className="flex items-center gap-3 py-4 px-8 bg-light border-2 border-light text-white text-base font-semibold rounded-full hover:bg-blue-400 hover:border-blue-400 transition-all duration-300 shadow-lg hover:scale-105">
+                        <Link to="/contact" className="flex-1 sm:flex-none">
+                            <button className="w-full flex justify-center items-center gap-2 sm:gap-3 py-3 px-2 sm:py-4 sm:px-8 bg-light border-2 border-light text-white text-xs sm:text-base font-semibold rounded-full hover:bg-blue-400 hover:border-blue-400 transition-all duration-300 shadow-lg hover:scale-105 whitespace-nowrap">
                                 <FontAwesomeIcon icon={faComments} />
                                 Ask a Question
                             </button>
                         </Link>
-                        <Link to="/location">
-                            <button className="flex items-center gap-3 py-4 px-8 bg-white/10 border-2 border-white/60 text-white text-base font-semibold rounded-full hover:bg-white hover:text-primary transition-all duration-300 backdrop-blur-sm hover:scale-105">
+                        <Link to="/location" className="flex-1 sm:flex-none">
+                            <button className="w-full flex justify-center items-center gap-2 sm:gap-3 py-3 px-2 sm:py-4 sm:px-8 bg-white/10 border-2 border-white/60 text-white text-xs sm:text-base font-semibold rounded-full hover:bg-white hover:text-primary transition-all duration-300 backdrop-blur-sm hover:scale-105 whitespace-nowrap">
                                 <FontAwesomeIcon icon={faLocationDot} />
                                 Visit Us
                             </button>

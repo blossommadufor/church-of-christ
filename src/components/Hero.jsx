@@ -61,16 +61,16 @@ const Hero = () => {
 
         {/* CTA Buttons */}
         <motion.div
-          className="flex flex-col sm:flex-row gap-4 justify-center"
+          className="flex flex-row gap-3 sm:gap-4 justify-center"
           variants={item}
         >
-          <Link to="/about">
-            <button className="py-4 px-8 bg-light border-2 border-light text-white text-base sm:text-lg font-semibold rounded-full hover:bg-blue-400 hover:border-blue-400 transition-all duration-300 shadow-lg hover:shadow-blue-400/40 hover:scale-105">
+          <Link to="/about" className="flex-1 sm:flex-none">
+            <button className="w-full py-3 px-2 sm:py-4 sm:px-8 bg-light border-2 border-light text-white text-sm sm:text-base md:text-lg font-semibold rounded-full hover:bg-blue-400 hover:border-blue-400 transition-all duration-300 shadow-lg hover:shadow-blue-400/40 hover:scale-105 whitespace-nowrap">
               Learn More
             </button>
           </Link>
-          <Link to="/contact">
-            <button className="py-4 px-8 bg-white/10 border-2 border-white text-white text-base sm:text-lg font-semibold rounded-full hover:bg-white hover:text-primary transition-all duration-300 backdrop-blur-sm hover:scale-105">
+          <Link to="/contact" className="flex-1 sm:flex-none">
+            <button className="w-full py-3 px-2 sm:py-4 sm:px-8 bg-white/10 border-2 border-white text-white text-sm sm:text-base md:text-lg font-semibold rounded-full hover:bg-white hover:text-primary transition-all duration-300 backdrop-blur-sm hover:scale-105 whitespace-nowrap">
               Contact Us
             </button>
           </Link>
