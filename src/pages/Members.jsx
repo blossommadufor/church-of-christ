@@ -8,11 +8,13 @@ const Members = () => {
     const [screen, setScreen] = useState("login");
     const [phone, setPhone] = useState("");
     const [userId, setUserId] = useState("");
+    const [otpHint, setOtpHint] = useState("");
     const [member, setMember] = useState(null);
 
-    const handleOtpSent = (ph, id) => {
+    const handleOtpSent = (ph, id, hint) => {
         setPhone(ph);
         setUserId(id);
+        setOtpHint(hint);
         setScreen("otp");
     };
 
@@ -35,6 +37,7 @@ const Members = () => {
                 <MembersOtp
                     phone={phone}
                     userId={userId}
+                    hint={otpHint}
                     onVerified={handleVerified}
                     onBack={() => setScreen("login")}
                 />

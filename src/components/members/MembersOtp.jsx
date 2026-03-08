@@ -6,10 +6,8 @@ import logo from "../../../public/assets/logo3.png";
 
 const OTP_LENGTH = 4;
 const RESEND_SECONDS = 60;
-// Simulated OTP — replace with real SMS validation
-const SIMULATED_OTP = "1234";
 
-const MembersOtp = ({ phone, userId, onVerified, onBack }) => {
+const MembersOtp = ({ phone, userId, hint, onVerified, onBack }) => {
     const [digits, setDigits] = useState(Array(OTP_LENGTH).fill(""));
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -88,8 +86,10 @@ const MembersOtp = ({ phone, userId, onVerified, onBack }) => {
         setDigits(Array(OTP_LENGTH).fill(""));
 
         try {
-            await memberServices.requestOtp(phone);
+            const res = await memberServices.requestOtp(phone);
             setCountdown(RESEND_SECONDS);
+            // Optionally update hint here if we had a callback to update `Members` parent state, 
+            // but usually the console log or original hint is enough for debugging.
         } catch (err) {
             setError("Failed to resend OTP.");
         } finally {
@@ -185,9 +185,11 @@ const MembersOtp = ({ phone, userId, onVerified, onBack }) => {
                 </div>
 
                 {/* Hint for dev */}
-                <p className="text-center text-gray-400 text-xs mt-4 italic">
-                    Demo OTP: <span className="font-bold">1234</span>
-                </p>
+                {hint && (
+                    <p className="text-center text-gray-400 text-xs mt-4 italic">
+                        Demo OTP: <span className="font-bold">{hint}</span>
+                    </p>
+                )}
             </div>
         </div>
     );

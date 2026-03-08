@@ -27,8 +27,8 @@ const MembersLogin = ({ onOtpSent }) => {
         try {
             // Member API requires formatting phone without spaces
             const formattedPhone = phone.replace(/\s/g, "");
-            await memberServices.requestOtp(formattedPhone);
-            onOtpSent(formattedPhone, userId);
+            const res = await memberServices.requestOtp(formattedPhone);
+            onOtpSent(formattedPhone, userId, res?.data?.OTP);
         } catch (err) {
             setError(err.message || "Failed to send OTP. Please try again.");
         } finally {

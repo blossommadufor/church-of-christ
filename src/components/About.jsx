@@ -26,6 +26,12 @@ const slides = [
 
 const about = [
   {
+    icon: "/assets/bird.svg",
+    title: "Edification",
+    text: "The Church is built up through sound teaching, sincere fellowship, and faithful worship. We are committed to growing together in the grace and knowledge of our Lord Jesus Christ.",
+    verse: '"...things wherewith one may edify another." — Romans 14:19',
+  },
+  {
     icon: "/assets/wedding.svg",
     title: "Evangelism",
     text: "We fulfil Christ's Great Commission by going into all the world to preach the gospel of salvation. Every soul matters, and we are committed to reaching the lost through the power of God's Word.",
@@ -36,12 +42,6 @@ const about = [
     title: "Benevolence",
     text: "Following the apostolic example, we care for fellow believers and our wider community. We show the love of Christ in practical ways — meeting needs, extending mercy, and bearing one another's burdens.",
     verse: '"Bear ye one another\'s burdens, and so fulfil the law of Christ." — Galatians 6:2',
-  },
-  {
-    icon: "/assets/bird.svg",
-    title: "Edification",
-    text: "The Church is built up through sound teaching, sincere fellowship, and faithful worship. We are committed to growing together in the grace and knowledge of our Lord Jesus Christ.",
-    verse: '"...things wherewith one may edify another." — Romans 14:19',
   },
 ];
 
