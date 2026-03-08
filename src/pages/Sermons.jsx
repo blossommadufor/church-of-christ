@@ -8,9 +8,11 @@ import Footer from '../components/Footer'
 const Sermons = () => {
   return (
     <div>
-      <Header />
-      <SermonHero />
-      <SermonList />
+      <Header isFixed />
+      {/* <SermonHero /> */}
+      <div className="pt-20 mt-2">
+        <SermonList />
+      </div>
       <CTA />
       <Footer />
     </div>

@@ -8,6 +8,8 @@ import Sermons from '../components/Sermons'
 import AboutIcons from '../components/AboutIcons'
 import Salvation from '../components/Salvation'
 import CTA from '../components/CTA'
+import ThoughtsOfTheWeek from '../components/ThoughtsOfTheWeek'
+import LivestreamBanner from '../components/LivestreamBanner'
 
 
 const Home = () => {
@@ -16,10 +18,12 @@ const Home = () => {
       <Header />
       <Hero />
       <About />
+      <ThoughtsOfTheWeek />
       <Salvation />
       <Sermons />
       <AboutIcons />
       <Activities />
+      <LivestreamBanner />
       <CTA />
       <Footer />
     </div>

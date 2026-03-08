@@ -4,13 +4,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import MobileNav from "./MobileNav";
 
-const Header = () => {
+const Header = ({ isFixed = false }) => {
   const [showNav, setShowNav] = useState(false);
-  const [sticky, setSticky] = useState(false);
+  const [sticky, setSticky] = useState(isFixed);
 
   useEffect(() => {
     const handleScroll = () => {
-      setSticky(window.scrollY > 0); // becomes sticky after scrolling down
+      if (!isFixed) {
+        setSticky(window.scrollY > 0); // becomes sticky after scrolling down
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -24,11 +26,11 @@ const Header = () => {
         : "bg-transparent text-gray-200 pt-6 xl:pt-12"
         } px-8`}
     >
-      <div className="container mx-auto flex justify-between items-center md:px-6">
+      <div className="wrap flex justify-between items-center md:px-0">
         {/* Left nav */}
         <div className="lg:block hidden">
           <ul
-            className={`flex gap-5 xl:gap-16 font-semibold py-3 px-10 ${sticky ? "" : "border-t-2 border-b-2 border-white"
+            className={`flex gap-5 xl:gap-16 font-semibold py-3 ${sticky ? "" : "border-t-2 border-b-2 border-white"
               }`}
           >
             <li>
@@ -57,7 +59,7 @@ const Header = () => {
         {/* Right nav */}
         <div className="lg:block hidden">
           <ul
-            className={`flex gap-5 xl:gap-16 font-semibold py-3 px-10 ${sticky ? "" : "border-t-2 border-b-2 border-white"
+            className={`flex gap-5 xl:gap-16 font-semibold py-3 ${sticky ? "" : "border-t-2 border-b-2 border-white"
               }`}
           >
             <li>

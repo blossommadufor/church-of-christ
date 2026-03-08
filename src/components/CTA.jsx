@@ -10,7 +10,7 @@ import {
 const CTA = () => {
     return (
         <div
-            className="relative overflow-hidden bg-cover bg-center bg-no-repeat py-32 lg:py-40"
+            className="relative overflow-hidden bg-cover bg-center bg-no-repeat py-28 lg:py-36"
             style={{ backgroundImage: "url(/assets/question.jpg)" }}
         >
             {/* Black overlay */}
@@ -81,7 +81,7 @@ const CTA = () => {
                     </motion.div>
 
                     {/* Scripture tag */}
-                    <motion.p
+                    {/* <motion.p
                         className="mt-14 text-gray-400 italic text-base"
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
@@ -90,7 +90,7 @@ const CTA = () => {
                     >
                         "Come to me, all you who are weary and burdened, and I will give you
                         rest." — Matthew 11:28
-                    </motion.p>
+                    </motion.p> */}
                 </div>
             </div>
         </div>

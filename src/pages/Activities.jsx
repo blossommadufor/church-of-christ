@@ -8,9 +8,11 @@ import CTA from '../components/CTA'
 const Activities = () => {
   return (
     <div>
-      <Header />
-      <ActivitiesHero />
-      <ActivitiesList />
+      <Header isFixed />
+      {/* <ActivitiesHero /> */}
+      <div className="pt-20 mt-2">
+        <ActivitiesList />
+      </div>
       <CTA />
       <Footer />
     </div>

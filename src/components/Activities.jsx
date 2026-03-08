@@ -44,20 +44,20 @@ const fadeUp = {
 
 const Activities = () => {
   return (
-    <div className="bg-secondary py-24 lg:py-32">
+    <div className="bg-white py-24 lg:py-32">
       <div className="wrap">
         {/* Section header row */}
-        <div className="flex items-center justify-between mb-12">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-0 mb-12">
           <div>
-            <p className="text-blue-300 uppercase tracking-widest text-base font-bold mb-1">
+            <p className="text-light uppercase tracking-widest text-base font-bold mb-1">
               Schedule
             </p>
-            <h2 className="text-white text-3xl md:text-4xl xl:text-5xl lg:text-4xl font-bold uppercase">
+            <h2 className="text-primary text-3xl md:text-4xl xl:text-5xl lg:text-4xl font-bold uppercase">
               Church Activities
             </h2>
           </div>
           <Link to="/activities">
-            <button className="py-2 px-5 rounded-full border-2 border-white text-white hover:bg-white hover:text-secondary font-semibold text-base transition-all duration-200 whitespace-nowrap">
+            <button className="py-2 px-5 rounded-full border-2 border-light text-light hover:bg-light hover:text-white font-semibold text-base transition-all duration-200 whitespace-nowrap">
               View More →
             </button>
           </Link>

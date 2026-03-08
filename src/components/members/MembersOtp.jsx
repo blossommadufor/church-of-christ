@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { memberServices } from "../../services/memberServices";
 import logo from "../../../public/assets/logo3.png";
 
 const OTP_LENGTH = 4;
@@ -53,12 +54,22 @@ const MembersOtp = ({ phone, userId, onVerified, onBack }) => {
             return;
         }
         setLoading(true);
-        // TODO: replace with real OTP validation API
-        await new Promise((r) => setTimeout(r, 1200));
-        if (otp !== SIMULATED_OTP) {
-            setError("Incorrect OTP. Please try again.");
+        try {
+            const response = await memberServices.login(otp);
+            // Simulate fetching additional member data per UI requirement
+            // In a real scenario, this data comes from `response`
+            onVerified({
+                name: response.firstName || "Member",
+                userId,
+                phone,
+                attended: response.attendance?.length || 0,
+                missed: 0,
+                lastAttendance: null,
+            });
+        } catch (err) {
+            setError(err.message || "Incorrect OTP. Please try again.");
+        } finally {
             setLoading(false);
-            return;
         }
         // Simulate fetching member data
         onVerified({
@@ -75,10 +86,15 @@ const MembersOtp = ({ phone, userId, onVerified, onBack }) => {
         setResending(true);
         setError("");
         setDigits(Array(OTP_LENGTH).fill(""));
-        // TODO: replace with real resend API
-        await new Promise((r) => setTimeout(r, 1000));
-        setResending(false);
-        setCountdown(RESEND_SECONDS);
+
+        try {
+            await memberServices.requestOtp(phone);
+            setCountdown(RESEND_SECONDS);
+        } catch (err) {
+            setError("Failed to resend OTP.");
+        } finally {
+            setResending(false);
+        }
     };
 
     const maskedPhone = phone.replace(/(\d{3})\d+(\d{3})/, "$1****$2");
@@ -121,8 +137,8 @@ const MembersOtp = ({ phone, userId, onVerified, onBack }) => {
                                 onChange={(e) => handleDigit(e.target.value, i)}
                                 onKeyDown={(e) => handleKeyDown(e, i)}
                                 className={`w-14 h-14 text-center text-2xl font-bold border-2 rounded-xl outline-none transition ${d
-                                        ? "border-light text-primary"
-                                        : "border-gray-200 text-gray-400"
+                                    ? "border-light text-primary"
+                                    : "border-gray-200 text-gray-400"
                                     } focus:border-light focus:ring-2 focus:ring-light/20`}
                             />
                         ))}

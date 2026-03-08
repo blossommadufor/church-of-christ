@@ -1,8 +1,9 @@
-import { faFacebook } from "@fortawesome/free-brands-svg-icons";
+import { faFacebook, faYoutube, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import {
   faEnvelope,
   faLocationDot,
   faPhone,
+  faShareNodes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
@@ -15,8 +16,8 @@ const Contact = () => {
           JOIN US IN WORSHIP
         </h2>
 
-        <div className="flex flex-col md:flex-row gap-20">
-          <form className="space-y-6 md:w-[60%]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-20">
+          <form className="space-y-5">
             <div>
               <input
                 type="text"
@@ -124,18 +125,38 @@ const Contact = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-8">
-              <div className="flex justify-center items-center border-2 border-light rounded-full w-10 h-10">
+            <div className="flex items-start gap-8">
+              <div className="flex justify-center items-center border-2 border-light rounded-full w-10 h-10 flex-shrink-0">
                 <FontAwesomeIcon
-                  icon={faFacebook}
+                  icon={faShareNodes}
                   className="text-primary text-lg"
                 />
               </div>
               <div>
                 <h3 className="font-semibold text-2xl pb-2 text-primary">
-                  Socials
+                  Connect With Us
                 </h3>
-                <p>@Church of christ nyanya </p>
+                <p className="pb-4">Follow our channels for updates</p>
+                <div className="flex gap-4">
+                  <a href="#" target="_blank" rel="noopener noreferrer" className="flex justify-center items-center border-2 border-light rounded-full w-10 h-10 hover:bg-light hover:text-white transition-all duration-300 group">
+                    <FontAwesomeIcon
+                      icon={faFacebook}
+                      className="text-primary text-lg group-hover:text-white transition-colors"
+                    />
+                  </a>
+                  <a href="#" target="_blank" rel="noopener noreferrer" className="flex justify-center items-center border-2 border-light rounded-full w-10 h-10 hover:bg-light hover:text-white transition-all duration-300 group">
+                    <FontAwesomeIcon
+                      icon={faYoutube}
+                      className="text-primary text-lg group-hover:text-white transition-colors"
+                    />
+                  </a>
+                  <a href="#" target="_blank" rel="noopener noreferrer" className="flex justify-center items-center border-2 border-light rounded-full w-10 h-10 hover:bg-light hover:text-white transition-all duration-300 group">
+                    <FontAwesomeIcon
+                      icon={faInstagram}
+                      className="text-primary text-lg group-hover:text-white transition-colors"
+                    />
+                  </a>
+                </div>
               </div>
             </div>
           </div>

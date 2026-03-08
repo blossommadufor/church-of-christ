@@ -10,9 +10,11 @@ import Footer from '../components/Footer'
 const About = () => {
   return (
     <div>
-      <Header />
-      <AboutHero />
-      <AboutWhoWeAre />
+      <Header isFixed />
+      {/* <AboutHero /> */}
+      <div className="pt-20 mt-2">
+        <AboutWhoWeAre />
+      </div>
       <AboutBeliefs />
       <AboutLeaders />
       <CTA />

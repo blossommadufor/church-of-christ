@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "../../public/assets/logo3.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFacebook, faYoutube } from "@fortawesome/free-brands-svg-icons";
+import { faFacebook, faYoutube, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope, faLocationDot, faPhone } from "@fortawesome/free-solid-svg-icons";
 
 const Footer = () => {
@@ -21,18 +21,24 @@ const Footer = () => {
           </p>
 
           <div className="flex pt-8 gap-5">
-            <div className="flex justify-center items-center bg-light rounded-full w-10 h-10 flex-shrink-0">
+            <a href="#" target="_blank" rel="noopener noreferrer" className="flex justify-center items-center bg-light rounded-full w-10 h-10 flex-shrink-0 hover:scale-110 hover:bg-white transition-all group">
               <FontAwesomeIcon
                 icon={faFacebook}
-                className="text-gray-200 text-lg"
+                className="text-gray-200 text-lg group-hover:text-light transition-colors"
               />
-            </div>
-            <div className="flex justify-center items-center bg-light rounded-full w-10 h-10 flex-shrink-0">
+            </a>
+            <a href="#" target="_blank" rel="noopener noreferrer" className="flex justify-center items-center bg-light rounded-full w-10 h-10 flex-shrink-0 hover:scale-110 hover:bg-white transition-all group">
               <FontAwesomeIcon
                 icon={faYoutube}
-                className="text-gray-200 text-lg"
+                className="text-gray-200 text-lg group-hover:text-light transition-colors"
               />
-            </div>
+            </a>
+            <a href="#" target="_blank" rel="noopener noreferrer" className="flex justify-center items-center bg-light rounded-full w-10 h-10 flex-shrink-0 hover:scale-110 hover:bg-white transition-all group">
+              <FontAwesomeIcon
+                icon={faInstagram}
+                className="text-gray-200 text-lg group-hover:text-light transition-colors"
+              />
+            </a>
           </div>
         </div>
 
@@ -154,16 +160,25 @@ const Footer = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="flex justify-center items-center bg-light rounded-full w-10 h-10">
+            <div className="flex gap-4 pt-2">
+              <a href="#" target="_blank" rel="noopener noreferrer" className="flex justify-center items-center bg-light rounded-full w-10 h-10 hover:scale-110 hover:bg-white transition-all group">
                 <FontAwesomeIcon
                   icon={faFacebook}
-                  className="text-gray-200 text-lg"
+                  className="text-gray-200 text-lg group-hover:text-light transition-colors"
                 />
-              </div>
-              <div>
-                <p>@Church of christ nyanya </p>
-              </div>
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer" className="flex justify-center items-center bg-light rounded-full w-10 h-10 hover:scale-110 hover:bg-white transition-all group">
+                <FontAwesomeIcon
+                  icon={faYoutube}
+                  className="text-gray-200 text-lg group-hover:text-light transition-colors"
+                />
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer" className="flex justify-center items-center bg-light rounded-full w-10 h-10 hover:scale-110 hover:bg-white transition-all group">
+                <FontAwesomeIcon
+                  icon={faInstagram}
+                  className="text-gray-200 text-lg group-hover:text-light transition-colors"
+                />
+              </a>
             </div>
           </div>
         </div>

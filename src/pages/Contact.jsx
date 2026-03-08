@@ -8,9 +8,11 @@ import CTA from "../components/CTA";
 const ContactPage = () => {
   return (
     <div>
-      <Header />
-      <ContactHero />
-      <Contact />
+      <Header isFixed />
+      {/* <ContactHero /> */}
+      <div className="pt-20 mt-2">
+        <Contact />
+      </div>
       <CTA />
       <Footer />
     </div>

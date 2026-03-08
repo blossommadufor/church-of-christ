@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUsers, faCheckCircle, faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { adminStats, dummyMembers } from "../../data/adminDummyData";
+import { adminServices } from "../../services/adminServices";
 
 const StatCard = ({ icon, label, value, sub, color }) => (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col gap-3">
@@ -16,6 +17,21 @@ const StatCard = ({ icon, label, value, sub, color }) => (
 );
 
 const AdminDashboard = () => {
+    // Analytics API integration
+    React.useEffect(() => {
+        const fetchAnalytics = async () => {
+            try {
+                // Fetch analytics for today as requested
+                const today = new Date().toISOString().split('T')[0];
+                const res = await adminServices.getAnalytics(today);
+                console.log("[API Analytics Response]:", res);
+            } catch (err) {
+                console.error("[API Analytics Error]:", err);
+            }
+        };
+        fetchAnalytics();
+    }, []);
+
     const recentActivity = dummyMembers
         .slice(0, 5)
         .map((m) => ({ name: m.name, date: m.attendance[0]?.date, status: m.attendance[0]?.status }));

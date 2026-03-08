@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPhone, faIdCard, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { memberServices } from "../../services/memberServices";
 import logo from "../../../public/assets/logo3.png";
 
 const MembersLogin = ({ onOtpSent }) => {
@@ -23,10 +24,16 @@ const MembersLogin = ({ onOtpSent }) => {
         }
 
         setLoading(true);
-        // TODO: replace with real OTP dispatch API call
-        await new Promise((r) => setTimeout(r, 1500));
-        setLoading(false);
-        onOtpSent(phone, userId);
+        try {
+            // Member API requires formatting phone without spaces
+            const formattedPhone = phone.replace(/\s/g, "");
+            await memberServices.requestOtp(formattedPhone);
+            onOtpSent(formattedPhone, userId);
+        } catch (err) {
+            setError(err.message || "Failed to send OTP. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

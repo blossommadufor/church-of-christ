@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-import { dummyMembers } from "../../data/adminDummyData";
+import { faArrowLeft, faCheckCircle, faTimesCircle, faEdit } from "@fortawesome/free-solid-svg-icons";
+import AddMemberModal from "../../components/admin/AddMemberModal";
+import { adminServices } from "../../services/adminServices";
 
 const InfoRow = ({ label, value }) => (
     <div className="flex flex-col gap-0.5">
@@ -14,43 +15,73 @@ const InfoRow = ({ label, value }) => (
 const fmt = (d) => d ? new Date(d).toLocaleDateString("en-NG", { year: "numeric", month: "long", day: "numeric" }) : "—";
 
 const AdminMemberDetail = () => {
-    const { id } = useParams();
-    const member = dummyMembers.find((m) => String(m.id) === String(id));
+    // id is no longer strictly used for finding in dummyData since we pass user via location state
+    const location = useLocation();
+
+    // We expect the router link to pass the full `user` block containing `member`
+    const user = location.state?.user;
+    const userRole = user?.role || "MEMBER";
+    const profile = user?.member || {};
+
+    // Fallbacks if no attendance data exists yet
+    const rawAttendance = profile.attendance || [];
 
     const years = useMemo(() => {
-        if (!member) return [];
-        return [...new Set(member.attendance.map((a) => a.date.split(",")[1]?.trim()))].sort((a, b) => b - a);
-    }, [member]);
+        if (!rawAttendance || !rawAttendance.length) return [];
+        return [...new Set(rawAttendance.map((a) => a.date.split(",")[1]?.trim()))].sort((a, b) => b - a);
+    }, [rawAttendance]);
 
     const [year, setYear] = useState(years[0] || "All");
+    const [showEdit, setShowEdit] = useState(false);
 
-    if (!member) return (
+    if (!user) return (
         <div className="text-center py-24">
-            <p className="text-gray-400 text-xl font-semibold">Member not found.</p>
-            <Link to="/admin/members" className="text-light font-semibold hover:underline mt-3 inline-block">← Back to Members</Link>
+            <p className="text-gray-400 text-xl font-semibold">Member details not available.</p>
+            <p className="text-gray-500 text-sm mt-2">Please navigate here from the Members list.</p>
+            <Link to="/admin/members" className="text-light font-semibold hover:underline mt-4 inline-block">← Back to Members</Link>
         </div>
     );
 
-    const attendance = year === "All" ? member.attendance : member.attendance.filter((a) => a.date.includes(year));
+    const handleUpdate = async (updatedData) => {
+        try {
+            await adminServices.updateMember(user._id, updatedData);
+            console.log("Successfully updated via API.");
+            setShowEdit(false);
+            // Dynamic refresh logic here eventually
+        } catch (err) {
+            console.error("Failed to update:", err);
+        }
+    };
+
+    const attendance = year === "All" ? rawAttendance : rawAttendance.filter((a) => a.date.includes(year));
     const present = attendance.filter((a) => a.status === "Present").length;
     const missed = attendance.filter((a) => a.status === "Absent").length;
     const pct = attendance.length ? Math.round((present / attendance.length) * 100) : 0;
 
     return (
         <div>
-            {/* Back */}
-            <Link to="/admin/members" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary font-semibold text-base mb-6 transition">
-                <FontAwesomeIcon icon={faArrowLeft} /> Back to Members
-            </Link>
+            {/* Header & Back */}
+            <div className="flex items-center justify-between mb-6">
+                <Link to="/admin/members" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary font-semibold text-base transition">
+                    <FontAwesomeIcon icon={faArrowLeft} /> Back to Members
+                </Link>
+                <button onClick={() => setShowEdit(true)}
+                    className="flex items-center gap-2 px-4 py-2 border-2 border-light text-light font-semibold rounded-xl hover:bg-light hover:text-white transition text-sm">
+                    <FontAwesomeIcon icon={faEdit} /> Edit Member
+                </button>
+            </div>
 
             {/* Profile header */}
             <div className="bg-primary rounded-2xl p-6 text-white mb-6 flex items-center gap-5">
-                <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-2xl font-bold">
-                    {member.name.charAt(0)}
+                <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-2xl font-bold uppercase">
+                    {profile.firstName?.charAt(0) || "M"}
                 </div>
                 <div>
-                    <h1 className="text-2xl font-bold">{member.name}</h1>
-                    <p className="text-blue-300 text-sm">{member.homeCongregation} Congregation</p>
+                    <h1 className="text-2xl font-bold">{profile.firstName} {profile.lastName}</h1>
+                    <div className="flex items-center gap-3 mt-1">
+                        <p className="text-blue-300 text-sm capitalize">{profile.homeCongregation} Congregation</p>
+                        <span className="bg-blue-400/20 text-blue-100 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">{userRole}</span>
+                    </div>
                 </div>
             </div>
 
@@ -58,14 +89,28 @@ const AdminMemberDetail = () => {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
                 <h2 className="text-primary font-bold text-lg mb-5">Personal Information</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <InfoRow label="Full Name" value={member.name} />
-                    <InfoRow label="Phone Number" value={member.phone} />
-                    <InfoRow label="Email" value={member.email} />
-                    <InfoRow label="Address" value={member.address} />
-                    <InfoRow label="Date of Baptism" value={fmt(member.dateOfBaptism)} />
-                    <InfoRow label="Date of Birth" value={fmt(member.dateOfBirth)} />
-                    <InfoRow label="Gender" value={member.gender} />
-                    <InfoRow label="Home Congregation" value={member.homeCongregation} />
+                    <InfoRow label="Full Name" value={`${profile.firstName} ${profile.lastName}`} />
+                    <InfoRow label="Phone Number" value={profile.phone} />
+                    <InfoRow label="Email" value={profile.email} />
+                    <InfoRow label="Address" value={profile.address} />
+                    <InfoRow label="Date of Baptism" value={fmt(profile.dateBaptised)} />
+                    <InfoRow label="Date Joined" value={fmt(profile.dateJoined)} />
+                    <InfoRow label="Gender" value={<span className="capitalize">{profile.gender}</span>} />
+                    <InfoRow label="Home Congregation" value={profile.homeCongregation} />
+                    <InfoRow label="Marital Status" value={<span className="capitalize">{profile.maritalStatus}</span>} />
+                    <InfoRow label="Occupation" value={profile.occupation} />
+                    <InfoRow label="ID Card Number" value={profile.idCardNumber} />
+                    <InfoRow label="Ministries" value={profile.ministries?.join(", ")} />
+                </div>
+            </div>
+
+            {/* Next of Kin */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+                <h2 className="text-primary font-bold text-lg mb-5">Next of Kin Details</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <InfoRow label="Name" value={profile.nextOfKin?.name} />
+                    <InfoRow label="Phone" value={profile.nextOfKin?.phone} />
+                    <InfoRow label="Address" value={profile.nextOfKin?.address} />
                 </div>
             </div>
 
@@ -120,6 +165,7 @@ const AdminMemberDetail = () => {
                     </table>
                 </div>
             </div>
+            {showEdit && <AddMemberModal onClose={() => setShowEdit(false)} onAdd={handleUpdate} />}
         </div>
     );
 };

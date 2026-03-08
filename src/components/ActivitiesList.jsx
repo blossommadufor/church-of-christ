@@ -65,7 +65,7 @@ const weeklyActivities = [
     activity: "Evangelism Outreach",
     description:
       "We go into the community to share the gospel of Jesus Christ, fulfilling God's Great Commission to preach to every creature.",
-    date: "Every 2nd Saturday",
+    date: "2nd Saturday every month",
     time: "10:00AM – 12:00PM",
     color: "bg-orange-500",
   },
@@ -74,7 +74,7 @@ const weeklyActivities = [
     activity: "Fasting & Prayers",
     description:
       "A corporate day of fasting and prayer, seeking God's face together for the church, families, and the nation.",
-    date: "Every 1st Saturday",
+    date: "1st Saturday every month",
     time: "6:00AM – 1:00PM",
     color: "bg-amber-600",
   },

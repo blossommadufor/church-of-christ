@@ -18,8 +18,8 @@ const slides = [
     passage: "~ Isaiah 45:5",
   },
   {
-    img: "/assets/about2.jpg",
-    text: "Be strong and of a good courage; be not afraid, neither be thou dismayed: for the Lord thy God is with thee whithersoever thou goest",
+    img: "/assets/hero.jpg",
+    text: "Be strong and of a good courage; be not afraid, neither be thou dismayed: for the Lord thy God is with thee whithersoever thou goest.",
     passage: "~ Joshua 1:9",
   },
 ];
