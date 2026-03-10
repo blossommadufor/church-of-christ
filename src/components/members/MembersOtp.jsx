@@ -86,11 +86,11 @@ const MembersOtp = ({ phone, userId, hint, onVerified, onBack }) => {
         setDigits(Array(OTP_LENGTH).fill(""));
 
         try {
-            const res = await memberServices.requestOtp(phone);
+            await memberServices.requestOtp(phone);
             setCountdown(RESEND_SECONDS);
             // Optionally update hint here if we had a callback to update `Members` parent state, 
             // but usually the console log or original hint is enough for debugging.
-        } catch (err) {
+        } catch {
             setError("Failed to resend OTP.");
         } finally {
             setResending(false);

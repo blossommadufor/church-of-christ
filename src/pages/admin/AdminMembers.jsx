@@ -22,6 +22,7 @@ const AdminMembers = () => {
     const [showAdd, setShowAdd] = useState(false);
     const [showUpload, setShowUpload] = useState(false);
     const [deleting, setDeleting] = useState(null);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
 
     // Fetch Members API whenever page or search changes
     React.useEffect(() => {
@@ -45,10 +46,13 @@ const AdminMembers = () => {
             }
         };
         fetchMembers();
-    }, [page, search]);
+    }, [page, search, refreshTrigger]);
 
     const handleSearch = (v) => { setSearch(v); setPage(1); };
-    const handleAdd = (m) => { setMembers((prev) => [{ ...m, id: Date.now() }, ...prev]); setShowAdd(false); };
+    const handleAdd = () => {
+        setRefreshTrigger(prev => prev + 1);
+        setShowAdd(false);
+    };
     const handleUploaded = (rows) => {
         const newMembers = rows.map((r, i) => ({
             id: Date.now() + i, name: r.name, phone: r.phone, email: r.email,
@@ -58,7 +62,11 @@ const AdminMembers = () => {
         }));
         setMembers((prev) => [...newMembers, ...prev]);
     };
-    const confirmDelete = (id) => { setMembers((prev) => prev.filter((m) => m.id !== id)); setDeleting(null); };
+    const confirmDelete = (id) => {
+        // This is still local for now until delete API is wired
+        setMembers((prev) => prev.filter((m) => m._id !== id && m.id !== id));
+        setDeleting(null);
+    };
 
     return (
         <div>

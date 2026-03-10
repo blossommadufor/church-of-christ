@@ -1,17 +1,17 @@
 import React from 'react'
 import Header from '../components/Header'
-import SermonHero from '../components/SermonHero'
-import SermonList from '../components/SermonList'
+import TeachingHero from '../components/TeachingHero'
+import TeachingList from '../components/TeachingList'
 import CTA from '../components/CTA'
 import Footer from '../components/Footer'
 
-const Sermons = () => {
+const Teachings = () => {
   return (
     <div>
       <Header isFixed />
-      {/* <SermonHero /> */}
+      {/* <TeachingHero /> */}
       <div className="pt-20 mt-2">
-        <SermonList />
+        <TeachingList />
       </div>
       <CTA />
       <Footer />
@@ -19,4 +19,4 @@ const Sermons = () => {
   )
 }
 
-export default Sermons
+export default Teachings

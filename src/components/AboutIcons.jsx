@@ -87,7 +87,7 @@ const AboutIcons = () => {
             {worshipActs.slice(0, 3).map((act, index) => (
               <motion.div
                 key={index}
-                className="flex flex-col items-center text-center p-5 border border-white/20 hover:border-light hover:bg-white/10 transition-all duration-300 rounded-lg"
+                className="flex flex-col items-center text-center px-5 py-6 lg:py-10 border border-white/20 hover:border-light hover:bg-white/10 transition-all duration-300 rounded-lg"
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
@@ -108,7 +108,7 @@ const AboutIcons = () => {
             {worshipActs.slice(3).map((act, index) => (
               <motion.div
                 key={index}
-                className="flex flex-col items-center text-center p-5 border border-white/20 hover:border-light hover:bg-white/10 transition-all duration-300 rounded-lg"
+                className="flex flex-col items-center text-center px-5 py-6 lg:py-10 border border-white/20 hover:border-light hover:bg-white/10 transition-all duration-300 rounded-lg"
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"

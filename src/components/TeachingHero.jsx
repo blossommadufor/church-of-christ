@@ -11,7 +11,7 @@ const item = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
 };
 
-const SermonHero = () => {
+const TeachingHero = () => {
   return (
     <div
       className="relative bg-[url('/assets/hero2.jpeg')] bg-top bg-cover bg-no-repeat flex items-center justify-center pt-20 overflow-hidden"
@@ -37,13 +37,13 @@ const SermonHero = () => {
           className="text-4xl md:text-5xl xl:text-6xl lg:text-5xl font-semibold mb-6 leading-[1.15]"
           variants={item}
         >
-          Sermons & Teachings
+          Teachings
         </motion.h1>
         <motion.p
           className="text-gray-300 md:text-xl text-base leading-relaxed"
           variants={item}
         >
-          Explore our library of sermons and Bible class recordings. Be edified,
+          Explore our library of teachings and Bible class recordings. Be edified,
           encouraged, and equipped to live faithfully for Christ.
         </motion.p>
         <motion.p className="italic text-blue-300 mt-6 font-medium" variants={item}>
@@ -54,4 +54,4 @@ const SermonHero = () => {
   );
 };
 
-export default SermonHero;
+export default TeachingHero;

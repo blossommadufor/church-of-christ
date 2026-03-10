@@ -92,9 +92,18 @@ const broadcastPrograms = [
   },
   {
     icon: faTv,
-    activity: "ITV Channel 130",
+    activity: "Startimes Channel 130",
     description:
-      "Watch our weekly televised program on ITV Channel 130, bringing the gospel into homes across the nation through sound teaching.",
+      "Watch our weekly televised program on Startimes Channel 130, bringing the gospel into homes across the nation through sound teaching.",
+    date: "Every Saturday",
+    time: "6:00PM – 6:30PM",
+    color: "bg-sky-600",
+  },
+  {
+    icon: faTv,
+    activity: "UHF Channel 142",
+    description:
+      "Watch our weekly televised program on UHF Channel 142, bringing the gospel into homes across the nation through sound teaching.",
     date: "Every Saturday",
     time: "6:00PM – 6:30PM",
     color: "bg-sky-600",
@@ -167,10 +176,10 @@ const ActivitiesList = () => {
         <div>
           <div className="mb-12">
             <p className="text-light uppercase tracking-widest text-base font-bold mb-2">
-              Broadcasting
+              Radio & TV Programs
             </p>
             <h2 className="text-primary text-3xl md:text-4xl xl:text-5xl lg:text-4xl font-bold">
-              RADIO & TV PROGRAMS
+              Let The Bible Speak
             </h2>
           </div>
           <div className="grid md:grid-cols-2 gap-6">

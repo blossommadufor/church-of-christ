@@ -42,7 +42,10 @@ const Header = ({ isFixed = false }) => {
             </li>
 
             <li>
-              <a href="/sermons">SERMONS</a>
+              <a href="/teachings">TEACHINGS</a>
+            </li>
+            <li>
+              <a href="/ministries">MINISTRIES</a>
             </li>
           </ul>
         </div>
@@ -67,6 +70,9 @@ const Header = ({ isFixed = false }) => {
             </li>
             <li>
               <a href="/contact">CONTACT</a>
+            </li>
+            <li>
+              <a href="/donation">DONATE</a>
             </li>
             <li>
               <a href="/members">MEMBERS</a>

@@ -7,9 +7,10 @@ import {
     faSpinner,
     faSignOut,
     faCalendarCheck,
-    faHouse,
+    faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../../public/assets/logo3.png";
+import MembersProfile from "./MembersProfile";
 
 const isAlreadyMarkedToday = (lastAttendance) => {
     if (!lastAttendance) return false;
@@ -17,16 +18,36 @@ const isAlreadyMarkedToday = (lastAttendance) => {
     return new Date(lastAttendance).toDateString() === today;
 };
 
-// ── Attendance step states ──────────────────────────────────────────────────
-// idle | checking | confirm | submitting | success | already | denied | failed
+// idle | select_status | checking | confirm | submitting | success | already | denied | failed
 const MembersDashboard = ({ member, onSignOut }) => {
+    const [activeTab, setActiveTab] = useState("dashboard");
     const [attended, setAttended] = useState(member.attended);
     const [missed] = useState(member.missed);
-    const [attStep, setAttStep] = useState(
-        isAlreadyMarkedToday(member.lastAttendance) ? "already" : "idle"
-    );
+
+    // Day logic
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 = Sunday, 4 = Thursday
+    const isServiceDay = dayOfWeek === 0 || dayOfWeek === 4;
+    const serviceName = dayOfWeek === 0 ? "General Worship" : dayOfWeek === 4 ? "Bible Study" : "Service";
+
+    const [attStep, setAttStep] = useState(() => {
+        if (!isServiceDay) return "not_service_day";
+        return isAlreadyMarkedToday(member.lastAttendance) ? "already" : "idle";
+    });
+
     const [coords, setCoords] = useState(null);
     const [submitError, setSubmitError] = useState("");
+    const [selectedStatus, setSelectedStatus] = useState("");
+
+    const handleSelectStatus = (status) => {
+        setSelectedStatus(status);
+        if (status === "Present") {
+            startAttendance();
+        } else {
+            // Sick or Traveled skip location
+            confirmAttendance(status);
+        }
+    };
 
     const startAttendance = () => {
         setAttStep("checking");
@@ -56,21 +77,30 @@ const MembersDashboard = ({ member, onSignOut }) => {
         );
     };
 
-    const confirmAttendance = async () => {
+    const confirmAttendance = async (statusOverride = null) => {
         setAttStep("submitting");
-        // TODO: replace with real API — send userId, coords, timestamp
+        const finalStatus = statusOverride || selectedStatus || "Present";
+
+        // TODO: replace with real API — send userId, coords, timestamp, finalStatus
         await new Promise((r) => setTimeout(r, 1500));
-        setAttended((a) => a + 1);
+
+        if (finalStatus === "Present") {
+            setAttended((a) => a + 1);
+        }
         setAttStep("success");
     };
 
     const reset = () => {
-        setAttStep("idle");
+        setAttStep("select_status");
         setCoords(null);
         setSubmitError("");
     };
 
     const totalSundays = attended + missed;
+
+    if (activeTab === "profile") {
+        return <MembersProfile member={member} onBack={() => setActiveTab("dashboard")} />;
+    }
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -82,13 +112,22 @@ const MembersDashboard = ({ member, onSignOut }) => {
                         <p className="text-blue-300 text-xs">Church of Christ, Nyanya</p>
                     </div>
                 </a>
-                <button
-                    onClick={onSignOut}
-                    className="flex items-center gap-2 text-gray-300 hover:text-white text-sm font-semibold transition"
-                >
-                    <FontAwesomeIcon icon={faSignOut} />
-                    Sign Out
-                </button>
+                <div className="flex items-center gap-6">
+                    <button
+                        onClick={() => setActiveTab("profile")}
+                        className="flex items-center gap-2 text-gray-300 hover:text-white text-sm font-semibold transition"
+                    >
+                        <FontAwesomeIcon icon={faUser} />
+                        Profile
+                    </button>
+                    <button
+                        onClick={onSignOut}
+                        className="flex items-center gap-2 text-red-300 hover:text-red-400 text-sm font-semibold transition"
+                    >
+                        <FontAwesomeIcon icon={faSignOut} />
+                        Sign Out
+                    </button>
+                </div>
             </div>
 
             {/* Main content */}
@@ -136,9 +175,9 @@ const MembersDashboard = ({ member, onSignOut }) => {
                             <FontAwesomeIcon icon={faCalendarCheck} className="text-primary text-lg" />
                         </div>
                         <div>
-                            <h2 className="text-primary font-bold text-base">Sunday Attendance</h2>
+                            <h2 className="text-primary font-bold text-base">{serviceName} Attendance</h2>
                             <p className="text-gray-400 text-xs">
-                                {new Date().toLocaleDateString("en-NG", {
+                                {today.toLocaleDateString("en-NG", {
                                     weekday: "long", year: "numeric", month: "long", day: "numeric",
                                 })}
                             </p>
@@ -146,14 +185,47 @@ const MembersDashboard = ({ member, onSignOut }) => {
                     </div>
 
                     {/* ── States ── */}
+                    {attStep === "not_service_day" && (
+                        <div className="flex flex-col items-center gap-3 py-4 text-center">
+                            <p className="text-gray-500 font-semibold">No services scheduled today.</p>
+                            <p className="text-gray-400 text-sm">Attendance marking is only available on Thursdays (Bible Study) and Sundays (General Worship).</p>
+                        </div>
+                    )}
+
                     {attStep === "idle" && (
                         <button
-                            onClick={startAttendance}
+                            onClick={() => setAttStep("select_status")}
                             className="w-full bg-primary text-white font-semibold py-3.5 rounded-xl hover:bg-light transition-colors duration-200 flex items-center justify-center gap-2 text-base"
                         >
-                            <FontAwesomeIcon icon={faLocationDot} />
+                            <FontAwesomeIcon icon={faCalendarCheck} />
                             Mark Attendance
                         </button>
+                    )}
+
+                    {attStep === "select_status" && (
+                        <div className="flex flex-col gap-4 py-2">
+                            <p className="text-gray-600 font-semibold text-center text-sm mb-2">What is your current status?</p>
+                            <button
+                                onClick={() => handleSelectStatus("Present")}
+                                className="w-full bg-green-500 text-white font-semibold py-3.5 rounded-xl hover:bg-green-600 transition-colors text-base flex items-center justify-center gap-2"
+                            >
+                                <FontAwesomeIcon icon={faLocationDot} /> I am Present
+                            </button>
+                            <div className="grid grid-cols-2 gap-3">
+                                <button
+                                    onClick={() => handleSelectStatus("Sick")}
+                                    className="w-full bg-orange-100 text-orange-600 font-semibold py-3 rounded-xl hover:bg-orange-200 transition-colors text-sm"
+                                >
+                                    Sick
+                                </button>
+                                <button
+                                    onClick={() => handleSelectStatus("Traveled")}
+                                    className="w-full bg-blue-100 text-blue-600 font-semibold py-3 rounded-xl hover:bg-blue-200 transition-colors text-sm"
+                                >
+                                    Traveled
+                                </button>
+                            </div>
+                        </div>
                     )}
 
                     {attStep === "checking" && (
@@ -184,7 +256,7 @@ const MembersDashboard = ({ member, onSignOut }) => {
                                     ❌ No, Cancel
                                 </button>
                                 <button
-                                    onClick={confirmAttendance}
+                                    onClick={() => confirmAttendance()}
                                     className="py-3 rounded-xl bg-primary text-white font-semibold hover:bg-light transition text-base"
                                 >
                                     ✅ Yes, Confirm
@@ -204,7 +276,11 @@ const MembersDashboard = ({ member, onSignOut }) => {
                         <div className="flex flex-col items-center gap-3 py-4 text-center">
                             <FontAwesomeIcon icon={faCheckCircle} className="text-green-500 text-4xl" />
                             <p className="text-green-600 font-bold text-lg">Attendance Marked!</p>
-                            <p className="text-gray-400 text-sm">Your attendance has been recorded for today.</p>
+                            <p className="text-gray-400 text-sm">
+                                {selectedStatus === "Present"
+                                    ? "Your attendance has been recorded for today."
+                                    : `Your status has been recorded as ${selectedStatus}.`}
+                            </p>
                         </div>
                     )}
 
@@ -237,7 +313,7 @@ const MembersDashboard = ({ member, onSignOut }) => {
                                 Your device could not determine your location. This usually happens on desktop computers without GPS hardware.
                                 Please use your phone to mark attendance.
                             </p>
-                            <button onClick={() => setAttStep("idle")} className="text-light font-semibold hover:underline text-sm">
+                            <button onClick={() => setAttStep("select_status")} className="text-light font-semibold hover:underline text-sm">
                                 Try again
                             </button>
                         </div>
@@ -251,7 +327,7 @@ const MembersDashboard = ({ member, onSignOut }) => {
                                 We couldn't retrieve your location. Please check your connection and try again.
                             </p>
                             <button
-                                onClick={startAttendance}
+                                onClick={() => setAttStep("select_status")}
                                 className="mt-1 py-2 px-6 bg-primary text-white rounded-xl font-semibold text-sm hover:bg-light transition"
                             >
                                 Retry

@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Layout from "./Layout";
 import Home from "./pages/Home";
 import About from "./pages/About";
-import Sermons from "./pages/Sermons";
-import SermonDetail from "./pages/SermonDetail";
+import Teachings from "./pages/Teachings";
+import TeachingDetail from "./pages/TeachingDetail";
 import Activities from "./pages/Activities";
 import Contact from "./pages/Contact";
 import Location from "./pages/Location";
@@ -14,6 +14,7 @@ import Ministries from "./pages/Ministries";
 import Beliefs from "./pages/Belief";
 import Roasters from "./pages/Roasters";
 import Members from "./pages/Members";
+import Donation from "./pages/Donation";
 // Admin portal
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminLayout from "./components/admin/AdminLayout";
@@ -22,6 +23,7 @@ import AdminMembers from "./pages/admin/AdminMembers";
 import AdminMemberDetail from "./pages/admin/AdminMemberDetail";
 import AdminGuard from "./utils/AdminGuard";
 import AdminAttendance from "./pages/admin/AdminAttendance";
+import AdminQuestions from "./pages/admin/AdminQuestions";
 import ScrollToTop from "./utils/ScrollToTop";
 
 function App() {
@@ -34,8 +36,8 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="/about" element={<About />} />
-            <Route path="/sermons" element={<Sermons />} />
-            <Route path="/sermons/:id" element={<SermonDetail />} />
+            <Route path="/teachings" element={<Teachings />} />
+            <Route path="/teachings/:id" element={<TeachingDetail />} />
             <Route path="/activities" element={<Activities />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/location" element={<Location />} />
@@ -44,6 +46,7 @@ function App() {
             <Route path="/ministries" element={<Ministries />} />
             <Route path="/beliefs" element={<Beliefs />} />
             <Route path="/roasters" element={<Roasters />} />
+            <Route path="/donation" element={<Donation />} />
           </Route>
 
           {/* Members portal — standalone */}
@@ -58,6 +61,7 @@ function App() {
               <Route path="/admin/members" element={<AdminMembers />} />
               <Route path="/admin/members/:id" element={<AdminMemberDetail />} />
               <Route path="/admin/attendance" element={<AdminAttendance />} />
+              <Route path="/admin/questions" element={<AdminQuestions />} />
             </Route>
           </Route>
         </Routes>

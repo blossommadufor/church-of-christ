@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faGauge, faUsers, faSignOut, faBars, faXmark, faCalendarCheck,
+    faGauge, faUsers, faSignOut, faBars, faXmark, faCalendarCheck, faComments
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../../public/assets/logo3.png";
 
@@ -10,6 +10,7 @@ const navItems = [
     { to: "/admin/dashboard", icon: faGauge, label: "Dashboard" },
     { to: "/admin/members", icon: faUsers, label: "Members" },
     { to: "/admin/attendance", icon: faCalendarCheck, label: "Attendance" },
+    { to: "/admin/questions", icon: faComments, label: "Questions" },
 ];
 
 const AdminLayout = () => {

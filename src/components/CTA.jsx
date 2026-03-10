@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,8 +6,11 @@ import {
     faLocationDot,
     faComments,
 } from "@fortawesome/free-solid-svg-icons";
+import AskQuestionModal from "./AskQuestionModal";
 
 const CTA = () => {
+    const [showQuestionModal, setShowQuestionModal] = useState(false);
+
     return (
         <div
             className="relative overflow-hidden bg-cover bg-center bg-no-repeat py-28 lg:py-36"
@@ -66,12 +69,15 @@ const CTA = () => {
                         transition={{ duration: 0.6, delay: 0.3 }}
                         viewport={{ once: true }}
                     >
-                        <Link to="/contact" className="flex-1 sm:flex-none">
-                            <button className="w-full flex justify-center items-center gap-2 sm:gap-3 py-3 px-2 sm:py-4 sm:px-8 bg-light border-2 border-light text-white text-xs sm:text-base font-semibold rounded-full hover:bg-blue-400 hover:border-blue-400 transition-all duration-300 shadow-lg hover:scale-105 whitespace-nowrap">
+                        <div className="flex-1 sm:flex-none">
+                            <button
+                                onClick={() => setShowQuestionModal(true)}
+                                className="w-full flex justify-center items-center gap-2 sm:gap-3 py-3 px-2 sm:py-4 sm:px-8 bg-light border-2 border-light text-white text-xs sm:text-base font-semibold rounded-full hover:bg-blue-400 hover:border-blue-400 transition-all duration-300 shadow-lg hover:scale-105 whitespace-nowrap"
+                            >
                                 <FontAwesomeIcon icon={faComments} />
                                 Ask a Question
                             </button>
-                        </Link>
+                        </div>
                         <Link to="/location" className="flex-1 sm:flex-none">
                             <button className="w-full flex justify-center items-center gap-2 sm:gap-3 py-3 px-2 sm:py-4 sm:px-8 bg-white/10 border-2 border-white/60 text-white text-xs sm:text-base font-semibold rounded-full hover:bg-white hover:text-primary transition-all duration-300 backdrop-blur-sm hover:scale-105 whitespace-nowrap">
                                 <FontAwesomeIcon icon={faLocationDot} />
@@ -93,6 +99,11 @@ const CTA = () => {
                     </motion.p> */}
                 </div>
             </div>
+
+            <AskQuestionModal
+                isOpen={showQuestionModal}
+                onClose={() => setShowQuestionModal(false)}
+            />
         </div>
     );
 };

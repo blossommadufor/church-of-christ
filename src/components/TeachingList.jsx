@@ -7,17 +7,17 @@ import {
   faFilter,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import SermonCard from "./SermonCard";
+import TeachingCard from "./TeachingCard";
 
-// ── Dummy sermon data (replace with Hygraph queries later) ──────────────────
-const sermons = [
+// ── Dummy teaching data (replace with Hygraph queries later) ──────────────────
+const teachings = [
   {
     id: 1,
     img: "/assets/hero.jpg",
     title: "The Power of the Resurrection",
     preacher: "Bro. Hart Emeribe",
     date: "Feb 23, 2025",
-    category: "Sunday Sermon",
+    category: "Sunday Teaching",
     topic: "Salvation",
   },
   {
@@ -35,7 +35,7 @@ const sermons = [
     title: "What Must I Do to Be Saved?",
     preacher: "Bro. Augustine Ohaju",
     date: "Feb 9, 2025",
-    category: "Sunday Sermon",
+    category: "Sunday Teaching",
     topic: "Salvation",
   },
   {
@@ -53,7 +53,7 @@ const sermons = [
     title: "Baptism: Buried and Raised With Christ",
     preacher: "Bro. Udoma Inyang",
     date: "Jan 26, 2025",
-    category: "Sunday Sermon",
+    category: "Sunday Teaching",
     topic: "Salvation",
   },
   {
@@ -67,7 +67,7 @@ const sermons = [
   },
 ];
 
-const categories = ["All", "Sunday Sermon", "Bible Class", "Evangelism"];
+const categories = ["All", "Sunday Teaching", "Bible Class", "Evangelism"];
 const topics = ["All Topics", "Salvation", "Worship", "Christian Living"];
 
 const fadeUp = {
@@ -75,13 +75,13 @@ const fadeUp = {
   visible: { opacity: 1, y: 0 },
 };
 
-const SermonList = () => {
+const TeachingList = () => {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [activeTopic, setActiveTopic] = useState("All Topics");
 
   const filtered = useMemo(() => {
-    return sermons.filter((s) => {
+    return teachings.filter((s) => {
       const matchSearch =
         s.title.toLowerCase().includes(search.toLowerCase()) ||
         s.preacher.toLowerCase().includes(search.toLowerCase());
@@ -108,10 +108,10 @@ const SermonList = () => {
         {/* ── Section header ── */}
         <div className="mb-10">
           <p className="text-light uppercase tracking-widest text-base font-bold mb-2">
-            Sermon Library
+            Teaching Library
           </p>
           <h2 className="text-primary text-3xl md:text-4xl xl:text-5xl lg:text-4xl font-semibold">
-            All Sermons
+            All Teachings
           </h2>
         </div>
 
@@ -125,7 +125,7 @@ const SermonList = () => {
             />
             <input
               type="text"
-              placeholder="Search by sermon title or preacher…"
+              placeholder="Search by teaching title or preacher…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 text-gray-700 outline-none focus:border-light focus:ring-2 focus:ring-light/20 transition text-base"
@@ -187,31 +187,31 @@ const SermonList = () => {
           )}
         </div>
 
-        {/* ── Sermon grid ── */}
+        {/* ── Teaching grid ── */}
         {filtered.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filtered.map((sermon, index) => (
+            {filtered.map((teaching, index) => (
               <motion.div
-                key={sermon.id}
+                key={teaching.id}
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
                 transition={{ duration: 0.45, delay: index * 0.07 }}
                 viewport={{ once: true }}
               >
-                <SermonCard
-                  img={sermon.img}
-                  title={sermon.title}
-                  preacher={sermon.preacher}
-                  date={sermon.date}
-                  id={sermon.id}
+                <TeachingCard
+                  img={teaching.img}
+                  title={teaching.title}
+                  preacher={teaching.preacher}
+                  date={teaching.date}
+                  id={teaching.id}
                 />
               </motion.div>
             ))}
           </div>
         ) : (
           <div className="text-center py-24">
-            <p className="text-gray-400 text-xl font-semibold mb-2">No sermons found</p>
+            <p className="text-gray-400 text-xl font-semibold mb-2">No teachings found</p>
             <p className="text-gray-400 text-base">Try adjusting your search or filters.</p>
           </div>
         )}
@@ -220,4 +220,4 @@ const SermonList = () => {
   );
 };
 
-export default SermonList;
+export default TeachingList;

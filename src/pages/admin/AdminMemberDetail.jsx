@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faCheckCircle, faTimesCircle, faEdit } from "@fortawesome/free-solid-svg-icons";
@@ -26,10 +26,7 @@ const AdminMemberDetail = () => {
     // Fallbacks if no attendance data exists yet
     const rawAttendance = profile.attendance || [];
 
-    const years = useMemo(() => {
-        if (!rawAttendance || !rawAttendance.length) return [];
-        return [...new Set(rawAttendance.map((a) => a.date.split(",")[1]?.trim()))].sort((a, b) => b - a);
-    }, [rawAttendance]);
+    const years = [...new Set(rawAttendance.map((a) => a.date.split(",")[1]?.trim()))].sort((a, b) => b - a);
 
     const [year, setYear] = useState(years[0] || "All");
     const [showEdit, setShowEdit] = useState(false);
@@ -56,6 +53,11 @@ const AdminMemberDetail = () => {
     const attendance = year === "All" ? rawAttendance : rawAttendance.filter((a) => a.date.includes(year));
     const present = attendance.filter((a) => a.status === "Present").length;
     const missed = attendance.filter((a) => a.status === "Absent").length;
+    const sick = attendance.filter((a) => a.status === "Sick").length;
+    const traveled = attendance.filter((a) => a.status === "Traveled").length;
+
+    // Using purely present for calculation right now, but total is all items recorded
+    // You could interpret 'Traveled' and 'Sick' as excusable absences, but here is base pct
     const pct = attendance.length ? Math.round((present / attendance.length) * 100) : 0;
 
     return (
@@ -138,13 +140,19 @@ const AdminMemberDetail = () => {
                     <div className="flex items-center gap-2 bg-red-50 text-red-500 px-4 py-2 rounded-full text-sm font-bold">
                         <FontAwesomeIcon icon={faTimesCircle} /> {missed} Absent
                     </div>
+                    <div className="flex items-center gap-2 bg-orange-50 text-orange-600 px-4 py-2 rounded-full text-sm font-bold">
+                        <FontAwesomeIcon icon={faCheckCircle} /> {sick} Sick
+                    </div>
+                    <div className="flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-full text-sm font-bold">
+                        <FontAwesomeIcon icon={faCheckCircle} /> {traveled} Traveled
+                    </div>
                 </div>
 
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead className="bg-gray-50 border-b border-gray-100">
                             <tr>
-                                <th className="text-left text-gray-500 font-semibold px-5 py-3">Date (Sunday)</th>
+                                <th className="text-left text-gray-500 font-semibold px-5 py-3">Date</th>
                                 <th className="text-left text-gray-500 font-semibold px-5 py-3">Status</th>
                             </tr>
                         </thead>
@@ -153,7 +161,10 @@ const AdminMemberDetail = () => {
                                 <tr key={i} className="border-b border-gray-50 hover:bg-gray-50 transition">
                                     <td className="px-5 py-3 text-gray-700 font-medium">{a.date}</td>
                                     <td className="px-5 py-3">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${a.status === "Present" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-400"
+                                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${a.status === "Present" ? "bg-green-100 text-green-700" :
+                                            a.status === "Sick" ? "bg-orange-100 text-orange-600" :
+                                                a.status === "Traveled" ? "bg-blue-100 text-blue-600" :
+                                                    "bg-red-100 text-red-400"
                                             }`}>{a.status}</span>
                                     </td>
                                 </tr>
@@ -165,7 +176,7 @@ const AdminMemberDetail = () => {
                     </table>
                 </div>
             </div>
-            {showEdit && <AddMemberModal onClose={() => setShowEdit(false)} onAdd={handleUpdate} />}
+            {showEdit && <AddMemberModal onClose={() => setShowEdit(false)} onAdd={handleUpdate} initialData={{ ...profile, roles: user.roles || ["MEMBER"], _id: user._id || user.id }} />}
         </div>
     );
 };

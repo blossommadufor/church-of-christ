@@ -1,5 +1,4 @@
 import React from 'react'
-import ActivitiesHero from '../components/ActivitiesHero'
 import ActivitiesList from '../components/ActivitiesList'
 import Footer from '../components/Footer'
 import Header from '../components/Header'

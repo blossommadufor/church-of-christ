@@ -4,7 +4,7 @@ import Activities from '../components/Activities'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 import Hero from '../components/Hero'
-import Sermons from '../components/Sermons'
+import Teachings from '../components/Teachings'
 import AboutIcons from '../components/AboutIcons'
 import Salvation from '../components/Salvation'
 import CTA from '../components/CTA'
@@ -20,7 +20,7 @@ const Home = () => {
       <About />
       <ThoughtsOfTheWeek />
       <Salvation />
-      <Sermons />
+      <Teachings />
       <AboutIcons />
       <Activities />
       <LivestreamBanner />

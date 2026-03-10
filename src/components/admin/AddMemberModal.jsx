@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import CustomSelect from "../CustomSelect";
+import NaijaStates from "naija-state-local-government";
 import { adminServices } from "../../services/adminServices";
 
 const CONGREGATIONS = [
@@ -23,21 +25,61 @@ const field = (label, children, required) => (
 
 const inputCls = "w-full px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 outline-none focus:border-light focus:ring-2 focus:ring-light/20 transition text-base";
 
-const AddMemberModal = ({ onClose, onAdd }) => {
+const AddMemberModal = ({ onClose, onAdd, initialData }) => {
     // Exact matched payload structure based on API
-    const [form, setForm] = useState({
-        firstName: "", lastName: "", email: "", phone: "",
-        state: "", lga: "", gender: "male", maritalStatus: "single",
-        preacherName: "", preacherContact: "",
-        congregationLastWorship: "", interestAreaInChurch: "",
-        dateBaptised: "", dateJoined: "", address: "",
-        ministries: [], houseFellowship: "Nyanya", occupation: "",
-        homeCongregation: "Nyanya", roles: ["MEMBER"], idCardNumber: "",
-        nextOfKinName: "", nextOfKinPhone: "", nextOfKinAddress: "" // flattened for easy binding
+    // Exact matched payload structure based on API
+    const [form, setForm] = useState(() => {
+        if (initialData) {
+            const fmtDate = (iso) => {
+                if (!iso) return "";
+                const d = new Date(iso);
+                return isNaN(d) ? "" : d.toISOString().split('T')[0];
+            };
+            // Unflatten nextOfKin values for the bound inputs if updating
+            return {
+                ...initialData,
+                dateBaptised: fmtDate(initialData.dateBaptised),
+                dateJoined: fmtDate(initialData.dateJoined),
+                nextOfKinName: initialData.nextOfKin?.name || "",
+                nextOfKinPhone: initialData.nextOfKin?.phone || "",
+                nextOfKinAddress: initialData.nextOfKin?.address || "",
+                nextOfKinRelationship: initialData.nextOfKin?.relationship || "",
+                ministries: initialData.ministries || [],
+                roles: initialData.roles || ["MEMBER"]
+            };
+        }
+        return {
+            firstName: "", lastName: "", email: "", phone: "",
+            state: "", lga: "", gender: "male", maritalStatus: "single",
+            preacherName: "", preacherContact: "",
+            congregationLastWorship: "", interestAreaInChurch: "",
+            dateBaptised: "", dateJoined: "", address: "",
+            ministries: [], houseFellowship: "Nyanya", occupation: "",
+            homeCongregation: "Nyanya", roles: ["MEMBER"], idCardNumber: "",
+            nextOfKinName: "", nextOfKinPhone: "", nextOfKinAddress: "", nextOfKinRelationship: ""
+        };
     });
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    // Dynamic naija states setup
+    const nigerianStates = NaijaStates.states().map((st) => ({
+        value: st,
+        label: st
+    }));
+    // Pre-populate LGA dropdown immediately if editing a member with a state already assigned
+    const [lgas, setLgas] = useState(() => {
+        if (initialData && initialData.state) {
+            try {
+                const localGovts = NaijaStates.lgas(initialData.state).lgas;
+                return localGovts.map(lga => ({ value: lga, label: lga }));
+            } catch (e) {
+                return [];
+            }
+        }
+        return [];
+    });
 
     const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
@@ -47,6 +89,20 @@ const AddMemberModal = ({ onClose, onAdd }) => {
             if (exists) return { ...f, ministries: f.ministries.filter(m => m !== min) };
             return { ...f, ministries: [...f.ministries, min] };
         });
+    };
+
+    const handleStateChange = (selectedOption) => {
+        setForm(f => ({ ...f, state: selectedOption ? selectedOption.value : "", lga: "" }));
+        if (selectedOption) {
+            const localGovts = NaijaStates.lgas(selectedOption.value).lgas;
+            setLgas(localGovts.map(lga => ({ value: lga, label: lga })));
+        } else {
+            setLgas([]);
+        }
+    };
+
+    const handleLgaChange = (selectedOption) => {
+        setForm(f => ({ ...f, lga: selectedOption ? selectedOption.value : "" }));
     };
 
     const handleSubmit = async (e) => {
@@ -62,7 +118,8 @@ const AddMemberModal = ({ onClose, onAdd }) => {
             nextOfKin: {
                 name: form.nextOfKinName,
                 phone: form.nextOfKinPhone,
-                address: form.nextOfKinAddress
+                address: form.nextOfKinAddress,
+                relationship: form.nextOfKinRelationship
             }
         };
 
@@ -70,12 +127,20 @@ const AddMemberModal = ({ onClose, onAdd }) => {
         delete payload.nextOfKinName;
         delete payload.nextOfKinPhone;
         delete payload.nextOfKinAddress;
+        delete payload.nextOfKinRelationship;
 
         setLoading(true);
         try {
-            const data = await adminServices.registerMember(payload);
-            // Simulate adding member locally so the UI updates
-            onAdd({ ...payload, id: data?._id || Date.now() });
+            if (initialData && (initialData._id || initialData.id)) {
+                // UPDATE logic
+                const memberId = initialData._id || initialData.id;
+                await adminServices.updateMember(memberId, payload);
+                onAdd({ ...payload, id: memberId, _id: memberId, isUpdate: true });
+            } else {
+                // ADD logic
+                const data = await adminServices.registerMember(payload);
+                onAdd({ ...payload, id: data?._id || Date.now() });
+            }
         } catch (err) {
             setError(err.message || "Failed to register member.");
         } finally {
@@ -92,7 +157,7 @@ const AddMemberModal = ({ onClose, onAdd }) => {
             >
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
-                    <h2 className="text-primary text-xl font-bold">Register New Member</h2>
+                    <h2 className="text-primary text-xl font-bold">{initialData ? "Update Member Profile" : "Register New Member"}</h2>
                     <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition">
                         <FontAwesomeIcon icon={faXmark} className="text-xl" />
                     </button>
@@ -103,10 +168,11 @@ const AddMemberModal = ({ onClose, onAdd }) => {
                     <div>
                         <p className="text-sm text-primary font-bold uppercase tracking-widest mb-3 border-b pb-1">Basic Information</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {field("First Name", <input className={inputCls} placeholder="e.g. Charles" value={form.firstName} onChange={set("firstName")} />, true)}
-                            {field("Last Name", <input className={inputCls} placeholder="e.g. Amos" value={form.lastName} onChange={set("lastName")} />, true)}
-                            {field("Phone Number", <input className={inputCls} placeholder="08012345678" value={form.phone} onChange={set("phone")} />, true)}
-                            {field("Email Address", <input className={inputCls} type="email" placeholder="email@example.com" value={form.email} onChange={set("email")} />)}
+                            {field("First Name", <input className={inputCls} placeholder="Enter first name" value={form.firstName} onChange={set("firstName")} />, true)}
+                            {field("Last Name", <input className={inputCls} placeholder="Enter last name" value={form.lastName} onChange={set("lastName")} />, true)}
+                            {field("Phone Number", <input className={inputCls} placeholder="Enter phone number" value={form.phone} onChange={set("phone")} />, true)}
+                            {field("Email Address", <input className={inputCls} type="email" placeholder="Enter email address" value={form.email} onChange={set("email")} />)}
+                            {field("Occupation", <input className={inputCls} placeholder="Enter occupation" value={form.occupation} onChange={set("occupation")} />)}
 
                             {field("Gender", (
                                 <select className={inputCls} value={form.gender} onChange={set("gender")}>
@@ -121,11 +187,28 @@ const AddMemberModal = ({ onClose, onAdd }) => {
                                     <option value="seperated">Separated</option>
                                 </select>
                             ))}
-                            {field("State", <input className={inputCls} placeholder="e.g. Rivers" value={form.state} onChange={set("state")} />)}
-                            {field("LGA", <input className={inputCls} placeholder="e.g. Andoni" value={form.lga} onChange={set("lga")} />)}
+                            {field("State", (
+                                <CustomSelect
+                                    options={nigerianStates}
+                                    placeholder="Select State..."
+                                    value={nigerianStates.find(opt => opt.value === form.state) || null}
+                                    onChange={handleStateChange}
+                                    isClearable
+                                />
+                            ))}
+                            {field("LGA", (
+                                <CustomSelect
+                                    options={lgas}
+                                    placeholder="Select LGA..."
+                                    value={lgas.find(opt => opt.value === form.lga) || null}
+                                    onChange={handleLgaChange}
+                                    isDisabled={!form.state}
+                                    isClearable
+                                />
+                            ))}
                         </div>
                         <div className="mt-4">
-                            {field("Address", <input className={inputCls} placeholder="Street, City" value={form.address} onChange={set("address")} />, true)}
+                            {field("Address", <input className={inputCls} placeholder="Enter full address" value={form.address} onChange={set("address")} />, true)}
                         </div>
                     </div>
 
@@ -133,19 +216,19 @@ const AddMemberModal = ({ onClose, onAdd }) => {
                     <div>
                         <p className="text-sm text-primary font-bold uppercase tracking-widest mb-3 border-b pb-1">Church Details</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {field("Date Baptised", <input className={inputCls} placeholder="22 February 2004" value={form.dateBaptised} onChange={set("dateBaptised")} />, true)}
-                            {field("Date Joined", <input className={inputCls} placeholder="4 August 2004" value={form.dateJoined} onChange={set("dateJoined")} />)}
-                            {field("Home Congregation", <input className={inputCls} placeholder="e.g. Assarama coc" value={form.homeCongregation} onChange={set("homeCongregation")} />)}
-                            {field("Previous Congregation", <input className={inputCls} placeholder="Where did you worship last?" value={form.congregationLastWorship} onChange={set("congregationLastWorship")} />)}
-                            {field("Preacher Name", <input className={inputCls} placeholder="e.g. Isirimah" value={form.preacherName} onChange={set("preacherName")} />)}
-                            {field("Preacher Contact", <input className={inputCls} placeholder="08073654234" value={form.preacherContact} onChange={set("preacherContact")} />)}
+                            {field("Date Baptised", <input type="date" className={inputCls} value={form.dateBaptised} onChange={set("dateBaptised")} />, true)}
+                            {field("Date Joined", <input type="date" className={inputCls} value={form.dateJoined} onChange={set("dateJoined")} />)}
+                            {field("Home Congregation", <input className={inputCls} placeholder="Enter congregation name" value={form.homeCongregation} onChange={set("homeCongregation")} />)}
+                            {field("Previous Congregation (Optional)", <input className={inputCls} placeholder="Where did you worship last?" value={form.congregationLastWorship} onChange={set("congregationLastWorship")} />)}
+                            {field("Preacher Name (Optional)", <input className={inputCls} placeholder="Enter preacher name" value={form.preacherName} onChange={set("preacherName")} />)}
+                            {field("Preacher Contact", <input className={inputCls} placeholder="Enter preacher contact" value={form.preacherContact} onChange={set("preacherContact")} />)}
 
                             {field("House Fellowship", (
                                 <select className={inputCls} value={form.houseFellowship} onChange={set("houseFellowship")}>
                                     {CONGREGATIONS.map((c) => <option key={c} value={c}>{c}</option>)}
                                 </select>
                             ))}
-                            {field("ID Card Number", <input className={inputCls} placeholder="003" value={form.idCardNumber} onChange={set("idCardNumber")} />)}
+                            {field("ID Card Number", <input className={inputCls} placeholder="Enter ID number" value={form.idCardNumber} onChange={set("idCardNumber")} />)}
                         </div>
                     </div>
 
@@ -175,14 +258,14 @@ const AddMemberModal = ({ onClose, onAdd }) => {
                         </div>
                     </div>
 
-                    {/* Next of Kin & Employment */}
+                    {/* Next of Kin */}
                     <div>
-                        <p className="text-sm text-primary font-bold uppercase tracking-widest mb-3 border-b pb-1">Next of Kin & Occupation</p>
+                        <p className="text-sm text-primary font-bold uppercase tracking-widest mb-3 border-b pb-1">Next of Kin</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {field("Occupation", <input className={inputCls} placeholder="e.g. Tech bro" value={form.occupation} onChange={set("occupation")} />)}
-                            {field("Next of Kin Name", <input className={inputCls} placeholder="e.g. Debby London" value={form.nextOfKinName} onChange={set("nextOfKinName")} />)}
-                            {field("Next of Kin Phone", <input className={inputCls} placeholder="09877636323" value={form.nextOfKinPhone} onChange={set("nextOfKinPhone")} />)}
-                            {field("Next of Kin Address", <input className={inputCls} placeholder="Karu Abuja" value={form.nextOfKinAddress} onChange={set("nextOfKinAddress")} />)}
+                            {field("Next of Kin Name", <input className={inputCls} placeholder="Enter full name" value={form.nextOfKinName} onChange={set("nextOfKinName")} />)}
+                            {field("Relationship", <input className={inputCls} placeholder="e.g. Spouse, Sibling" value={form.nextOfKinRelationship} onChange={set("nextOfKinRelationship")} />)}
+                            {field("Next of Kin Phone", <input className={inputCls} placeholder="Enter phone number" value={form.nextOfKinPhone} onChange={set("nextOfKinPhone")} />)}
+                            {field("Next of Kin Address", <input className={inputCls} placeholder="Enter address" value={form.nextOfKinAddress} onChange={set("nextOfKinAddress")} />)}
                         </div>
                     </div>
 
@@ -195,7 +278,7 @@ const AddMemberModal = ({ onClose, onAdd }) => {
                         </button>
                         <button type="submit" disabled={loading}
                             className="flex-1 py-3.5 bg-primary text-white font-semibold rounded-xl hover:bg-light transition flex items-center justify-center gap-2">
-                            {loading ? <><FontAwesomeIcon icon={faSpinner} className="animate-spin" /> Registering…</> : "Register Member"}
+                            {loading ? <><FontAwesomeIcon icon={faSpinner} className="animate-spin" /> {initialData ? "Saving…" : "Registering…"}</> : (initialData ? "Save Changes" : "Register Member")}
                         </button>
                     </div>
                 </form>

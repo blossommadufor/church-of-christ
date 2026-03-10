@@ -74,7 +74,10 @@ const AdminDashboard = () => {
                                     <td className="py-3 pr-4 font-semibold text-primary">{r.name}</td>
                                     <td className="py-3 pr-4 text-gray-500">{r.date}</td>
                                     <td className="py-3">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${r.status === "Present" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-500"
+                                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${r.status === "Present" ? "bg-green-100 text-green-700" :
+                                                r.status === "Sick" ? "bg-orange-100 text-orange-600" :
+                                                    r.status === "Traveled" ? "bg-blue-100 text-blue-600" :
+                                                        "bg-red-100 text-red-500"
                                             }`}>{r.status}</span>
                                     </td>
                                 </tr>

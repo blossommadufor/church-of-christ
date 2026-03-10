@@ -8,8 +8,10 @@ const buildAttendanceMap = () => {
     const map = {};
     dummyMembers.forEach((member) => {
         member.attendance.forEach(({ date, status }) => {
-            if (!map[date]) map[date] = { present: [], absent: [] };
+            if (!map[date]) map[date] = { present: [], absent: [], sick: [], traveled: [] };
             if (status === "Present") map[date].present.push(member);
+            else if (status === "Sick") map[date].sick.push(member);
+            else if (status === "Traveled") map[date].traveled.push(member);
             else map[date].absent.push(member);
         });
     });
@@ -27,7 +29,11 @@ const AdminAttendance = () => {
     };
 
     if (selected) {
-        const viewData = view === "present" ? selected.present : selected.absent;
+        let viewData = [];
+        if (view === "present") viewData = selected.present;
+        else if (view === "absent") viewData = selected.absent;
+        else if (view === "sick") viewData = selected.sick;
+        else if (view === "traveled") viewData = selected.traveled;
 
         return (
             <div>
@@ -41,7 +47,7 @@ const AdminAttendance = () => {
                 <div className="mb-6">
                     <h1 className="text-primary text-2xl font-bold">{selected.date}</h1>
                     <p className="text-gray-500 text-base mt-1">
-                        {selected.present.length} present · {selected.absent.length} absent
+                        {selected.present.length} present · {selected.absent.length} absent · {selected.sick.length} sick · {selected.traveled.length} traveled
                     </p>
                 </div>
 
@@ -57,6 +63,24 @@ const AdminAttendance = () => {
                         <FontAwesomeIcon icon={faCheckCircle} /> Present ({selected.present.length})
                     </button>
                     <button
+                        onClick={() => setView("sick")}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition ${view === "sick"
+                            ? "bg-orange-500 text-white shadow-sm"
+                            : "bg-orange-50 text-orange-600 hover:bg-orange-100"
+                            }`}
+                    >
+                        <FontAwesomeIcon icon={faCheckCircle} /> Sick ({selected.sick.length})
+                    </button>
+                    <button
+                        onClick={() => setView("traveled")}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition ${view === "traveled"
+                            ? "bg-blue-500 text-white shadow-sm"
+                            : "bg-blue-50 text-blue-600 hover:bg-blue-100"
+                            }`}
+                    >
+                        <FontAwesomeIcon icon={faCheckCircle} /> Traveled ({selected.traveled.length})
+                    </button>
+                    <button
                         onClick={() => setView("absent")}
                         className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition ${view === "absent"
                             ? "bg-red-500 text-white shadow-sm"
@@ -70,8 +94,8 @@ const AdminAttendance = () => {
                 {/* Single table */}
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-100">
-                        <h2 className="text-primary font-bold text-lg">
-                            Members {view === "present" ? "Present" : "Absent"}
+                        <h2 className="text-primary font-bold text-lg capitalize">
+                            Members {view}
                         </h2>
                     </div>
                     <div className="overflow-x-auto">
@@ -118,20 +142,20 @@ const AdminAttendance = () => {
                     <table className="w-full text-sm">
                         <thead className="bg-gray-50 border-b border-gray-100">
                             <tr>
-                                {["Sunday", "Present", "Absent", "Attendance Rate", ""].map((h) => (
+                                {["Sunday", "Present", "Absent", "Sick", "Traveled", "Attendance Rate", ""].map((h) => (
                                     <th key={h} className="text-left text-gray-500 font-semibold px-5 py-4">{h}</th>
                                 ))}
                             </tr>
                         </thead>
                         <tbody>
-                            {rows.map(([date, { present, absent }]) => {
-                                const total = present.length + absent.length;
+                            {rows.map(([date, { present, absent, sick, traveled }]) => {
+                                const total = present.length + absent.length + sick.length + traveled.length;
                                 const pct = total ? Math.round((present.length / total) * 100) : 0;
                                 return (
                                     <tr
                                         key={date}
                                         className="border-b border-gray-50 hover:bg-blue-50/40 transition cursor-pointer"
-                                        onClick={() => handleSelect({ date, present, absent })}
+                                        onClick={() => handleSelect({ date, present, absent, sick, traveled })}
                                     >
                                         <td className="px-5 py-4 font-semibold text-primary">{date}</td>
                                         <td className="px-5 py-4">
@@ -144,6 +168,18 @@ const AdminAttendance = () => {
                                             <span className="flex items-center gap-1.5 text-red-400 font-bold">
                                                 <span className="w-2 h-2 rounded-full bg-red-400 inline-block" />
                                                 {absent.length}
+                                            </span>
+                                        </td>
+                                        <td className="px-5 py-4">
+                                            <span className="flex items-center gap-1.5 text-orange-500 font-bold">
+                                                <span className="w-2 h-2 rounded-full bg-orange-400 inline-block" />
+                                                {sick.length}
+                                            </span>
+                                        </td>
+                                        <td className="px-5 py-4">
+                                            <span className="flex items-center gap-1.5 text-blue-500 font-bold">
+                                                <span className="w-2 h-2 rounded-full bg-blue-400 inline-block" />
+                                                {traveled.length}
                                             </span>
                                         </td>
                                         <td className="px-5 py-4">

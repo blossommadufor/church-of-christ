@@ -8,11 +8,11 @@ import Header from "../components/Header";
 import CTA from "../components/CTA";
 import Footer from "../components/Footer";
 
-// Dummy sermon detail — used for all sermon views until Hygraph is connected
+// Dummy teaching detail — used for all teaching views until Hygraph is connected
 const dummy = {
     preacher: "Bro. Hart Emeribe",
     date: "Feb 23, 2025",
-    category: "Sunday Sermon",
+    category: "Sunday Teaching",
     topic: "Christian Living",
     scripture: "1 Corinthians 15:1–8",
     img: "/assets/hero.jpg",
@@ -27,7 +27,8 @@ const dummy = {
     ],
 };
 
-const SermonDetail = () => {
+const TeachingDetail = () => {
+    // eslint-disable-next-line no-unused-vars
     const { id } = useParams();
 
     return (
@@ -38,10 +39,10 @@ const SermonDetail = () => {
             <div className="bg-primary pt-36 pb-28">
                 <div className="wrap">
                     <Link
-                        to="/sermons"
+                        to="/teachings"
                         className="inline-flex items-center gap-2 text-blue-300 hover:text-white text-base font-semibold mb-8 transition"
                     >
-                        <FontAwesomeIcon icon={faArrowLeft} /> All Sermons
+                        <FontAwesomeIcon icon={faArrowLeft} /> All Teachings
                     </Link>
 
                     {/* Category tag */}
@@ -72,7 +73,7 @@ const SermonDetail = () => {
                 </div>
             </div>
 
-            {/* ── Sermon body ── */}
+            {/* ── Teaching body ── */}
             <div className="bg-gray-50 py-16">
                 <div className="wrap">
                     <div className="max-w-3xl">
@@ -104,10 +105,10 @@ const SermonDetail = () => {
 
                         {/* Back link */}
                         <Link
-                            to="/sermons"
+                            to="/teachings"
                             className="inline-flex items-center gap-2 text-light hover:text-primary font-semibold text-base transition"
                         >
-                            <FontAwesomeIcon icon={faArrowLeft} /> Back to all Sermons
+                            <FontAwesomeIcon icon={faArrowLeft} /> Back to all Teachings
                         </Link>
                     </div>
                 </div>
@@ -119,4 +120,4 @@ const SermonDetail = () => {
     );
 };
 
-export default SermonDetail;
+export default TeachingDetail;
