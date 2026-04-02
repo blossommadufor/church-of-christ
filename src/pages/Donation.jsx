@@ -17,30 +17,30 @@ const accounts = [
         name: "Church of Christ, Nyanya",
         bank: "Ecobank"
     },
-    {
-        purpose: "General Church Account",
-        number: "1234567890",
-        name: "Church of Christ, Nyanya",
-        bank: "Guaranty Trust Bank (GTB)"
-    },
-    {
-        purpose: "Youth Ministry Account",
-        number: "5544332211",
-        name: "Church of Christ, Nyanya",
-        bank: "Access Bank"
-    },
-    {
-        purpose: "Sisters Ministry Account",
-        number: "9988776655",
-        name: "Church of Christ, Nyanya",
-        bank: "United Bank for Africa (UBA)"
-    },
-    {
-        purpose: "Children Ministry Account",
-        number: "2233445566",
-        name: "Church of Christ, Nyanya",
-        bank: "Fidelity Bank"
-    }
+    // {
+    //     purpose: "General Church Account",
+    //     number: "1234567890",
+    //     name: "Church of Christ, Nyanya",
+    //     bank: "Guaranty Trust Bank (GTB)"
+    // },
+    // {
+    //     purpose: "Youth Ministry Account",
+    //     number: "5544332211",
+    //     name: "Church of Christ, Nyanya",
+    //     bank: "Access Bank"
+    // },
+    // {
+    //     purpose: "Sisters Ministry Account",
+    //     number: "9988776655",
+    //     name: "Church of Christ, Nyanya",
+    //     bank: "United Bank for Africa (UBA)"
+    // },
+    // {
+    //     purpose: "Children Ministry Account",
+    //     number: "2233445566",
+    //     name: "Church of Christ, Nyanya",
+    //     bank: "Fidelity Bank"
+    // }
 ];
 
 const fadeUp = {
@@ -85,7 +85,7 @@ const Donation = () => {
 
                     {/* Donation Cards */}
                     <motion.div
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                        className="grid grid-cols-1 md:grid-cols-2 gap-8"
                         variants={staggerContainer}
                         initial="hidden"
                         animate="visible"

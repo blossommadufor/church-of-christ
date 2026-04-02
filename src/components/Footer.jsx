@@ -160,7 +160,7 @@ const Footer = () => {
               </div>
             </div>
 
-            <div className="flex gap-4 pt-2">
+            {/* <div className="flex gap-4 pt-2">
               <a href="#" target="_blank" rel="noopener noreferrer" className="flex justify-center items-center bg-light rounded-full w-10 h-10 hover:scale-110 hover:bg-white transition-all group">
                 <FontAwesomeIcon
                   icon={faFacebook}
@@ -179,7 +179,7 @@ const Footer = () => {
                   className="text-gray-200 text-lg group-hover:text-light transition-colors"
                 />
               </a>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
