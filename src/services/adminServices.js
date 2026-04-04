@@ -1,4 +1,5 @@
 import apiClient from "./apiClient";
+import { buildQueryParams } from "../utils/analyticsUtils";
 
 export const adminServices = {
   // Admin Member Management Flow
@@ -20,8 +21,22 @@ export const adminServices = {
     const response = await apiClient.get(`/member/${id}`);
     return response.data;
   },
-  getAnalytics: async (date) => {
+  getMemberAnalytics: async (date) => {
     const response = await apiClient.get(`/member/analytics?date=${date}`);
+    return response.data;
+  },
+  getAttendanceAnalytics: async (params = {}) => {
+    const qs = buildQueryParams(params);
+    const response = await apiClient.get(
+      `/attendance/attendance-analytics${qs ? `?${qs}` : ""}`
+    );
+    return response.data;
+  },
+  getAttendanceList: async (params = {}) => {
+    const qs = buildQueryParams(params);
+    const response = await apiClient.get(
+      `/attendance/fetch-attendance${qs ? `?${qs}` : ""}`
+    );
     return response.data;
   },
 };
