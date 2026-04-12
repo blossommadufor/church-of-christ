@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faCheckCircle,
@@ -11,6 +12,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../../public/assets/logo3.png";
 import MembersProfile from "./MembersProfile";
+import { memberServices } from "../../services/memberServices";
+
+const getWelcomeName = (member, user) => {
+    const firstName = member?.firstName || member?.name?.split(' ')[0] || user?.name?.split(' ')[0] || 'Member';
+    const gender = (member?.gender || '').toLowerCase();
+    if (gender === 'male') return `Bro. ${firstName}`;
+    if (gender === 'female') return `Sis. ${firstName}`;
+    return firstName;
+};
 
 const isAlreadyMarkedToday = (lastAttendance) => {
     if (!lastAttendance) return false;
@@ -20,6 +30,9 @@ const isAlreadyMarkedToday = (lastAttendance) => {
 
 // idle | select_status | checking | confirm | submitting | success | already | denied | failed
 const MembersDashboard = ({ member, onSignOut }) => {
+    const { user } = useAuth();
+    const isAdmin = user?.roles?.includes("ADMIN") || user?.role === "ADMIN" || user?.permissions?.includes("DO_ALL");
+
     const [activeTab, setActiveTab] = useState("dashboard");
     const [attended, setAttended] = useState(member.attended);
     const [missed] = useState(member.missed);
@@ -81,13 +94,20 @@ const MembersDashboard = ({ member, onSignOut }) => {
         setAttStep("submitting");
         const finalStatus = statusOverride || selectedStatus || "Present";
 
-        // TODO: replace with real API — send userId, coords, timestamp, finalStatus
-        await new Promise((r) => setTimeout(r, 1500));
-
-        if (finalStatus === "Present") {
-            setAttended((a) => a + 1);
+        try {
+            await memberServices.markAttendance({
+                 status: finalStatus,
+                 lat: finalStatus === "Present" && coords?.lat ? parseFloat(coords.lat) : null,
+                 lng: finalStatus === "Present" && coords?.lng ? parseFloat(coords.lng) : null
+            });
+            if (finalStatus === "Present") {
+                setAttended((a) => a + 1);
+            }
+            setAttStep("success");
+        } catch (err) {
+            setSubmitError(err.message || "Failed to submit attendance.");
+            setAttStep(finalStatus === "Present" ? "confirm" : "select_status");
         }
-        setAttStep("success");
     };
 
     const reset = () => {
@@ -113,6 +133,14 @@ const MembersDashboard = ({ member, onSignOut }) => {
                     </div>
                 </a>
                 <div className="flex items-center gap-6">
+                    {isAdmin && (
+                        <a
+                            href="/admin/dashboard"
+                            className="flex items-center gap-2 text-primary-200 text-blue-300 hover:text-white text-sm font-semibold transition"
+                        >
+                            Admin Portal
+                        </a>
+                    )}
                     <button
                         onClick={() => setActiveTab("profile")}
                         className="flex items-center gap-2 text-gray-300 hover:text-white text-sm font-semibold transition"
@@ -135,8 +163,8 @@ const MembersDashboard = ({ member, onSignOut }) => {
                 {/* Welcome */}
                 <div className="mb-8">
                     <p className="text-gray-500 text-base">Welcome back,</p>
-                    <h1 className="text-primary text-2xl font-bold">{member.name}</h1>
-                    <p className="text-gray-400 text-xs mt-1">Member ID: {member.userId}</p>
+                    <h1 className="text-primary text-2xl font-bold">{getWelcomeName(member, user)}</h1>
+                    <p className="text-gray-400 text-xs mt-1">Member ID: {member?.idCardNumber || member?.userId || 'N/A'}</p>
                 </div>
 
                 {/* ── Attendance summary cards ── */}

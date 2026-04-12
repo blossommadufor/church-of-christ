@@ -14,6 +14,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { adminServices } from "../../services/adminServices";
 import { formatDate, formatMonth } from "../../utils/analyticsUtils";
+const token = localStorage.getItem('token');
+console.log('Token', token)
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 

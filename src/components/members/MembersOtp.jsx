@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { memberServices } from "../../services/memberServices";
+import { useAuth } from "../../context/AuthContext";
 import logo from "../../../public/assets/logo3.png";
 
 const OTP_LENGTH = 4;
 const RESEND_SECONDS = 60;
 
 const MembersOtp = ({ phone, userId, hint, onVerified, onBack }) => {
+    const { login } = useAuth();
     const [digits, setDigits] = useState(Array(OTP_LENGTH).fill(""));
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -54,30 +56,24 @@ const MembersOtp = ({ phone, userId, hint, onVerified, onBack }) => {
         setLoading(true);
         try {
             const response = await memberServices.login(otp);
-            // Simulate fetching additional member data per UI requirement
-            // In a real scenario, this data comes from `response`
-            onVerified({
-                name: response.firstName || "Member",
-                userId,
-                phone,
-                attended: response.attendance?.length || 0,
-                missed: 0,
-                lastAttendance: null,
-            });
+            const loginPayload = response?.data || response;
+            
+            if (loginPayload && loginPayload.token) {
+                login({
+                    token: loginPayload.token,
+                    user: loginPayload.user || { roles: ["MEMBER"], permissions: [] },
+                    member: loginPayload.member || {}
+                });
+                if (onVerified) onVerified();
+            } else {
+                throw new Error("Invalid response from server.");
+            }
         } catch (err) {
-            setError(err.message || "Incorrect OTP. Please try again.");
+            console.error("Login Error:", err);
+            setError(err.response?.data?.message || err.message || "Incorrect OTP. Please try again.");
         } finally {
             setLoading(false);
         }
-        // Simulate fetching member data
-        onVerified({
-            name: "Member",
-            userId,
-            phone,
-            attended: 14,
-            missed: 3,
-            lastAttendance: null,
-        });
     };
 
     const handleResend = async () => {

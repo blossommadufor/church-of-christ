@@ -9,5 +9,9 @@ export const memberServices = {
     login: async (otp) => {
         const response = await apiClient.post(`/member/login`, { otp });
         return response.data;
+    },
+    markAttendance: async (payload) => {
+        const response = await apiClient.post(`/attendance/member-mark`, payload);
+        return response.data;
     }
 };

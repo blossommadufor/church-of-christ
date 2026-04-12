@@ -1,5 +1,6 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 import Layout from "./Layout";
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -21,51 +22,59 @@ import AdminLayout from "./components/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminMembers from "./pages/admin/AdminMembers";
 import AdminMemberDetail from "./pages/admin/AdminMemberDetail";
-import AdminGuard from "./utils/AdminGuard";
 import AdminAttendance from "./pages/admin/AdminAttendance";
 import AdminQuestions from "./pages/admin/AdminQuestions";
 import ScrollToTop from "./utils/ScrollToTop";
+import MembersDashboardWrapper from "./components/members/MembersDashboardWrapper";
+import AuthGuard from "./utils/AuthGuard";
 
 function App() {
   return (
     <>
-      <Router>
-        <ScrollToTop />
-        <Routes>
-          {/* Public site */}
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/teachings" element={<Teachings />} />
-            <Route path="/teachings/:id" element={<TeachingDetail />} />
-            <Route path="/activities" element={<Activities />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/location" element={<Location />} />
-            <Route path="/history" element={<History />} />
-            <Route path="/leaders" element={<Leaders />} />
-            <Route path="/ministries" element={<Ministries />} />
-            <Route path="/beliefs" element={<Beliefs />} />
-            <Route path="/roasters" element={<Roasters />} />
-            <Route path="/donation" element={<Donation />} />
-          </Route>
-
-          {/* Members portal — standalone */}
-          <Route path="/members" element={<Members />} />
-
-          {/* Admin portal — standalone */}
-          <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route element={<AdminGuard />}>
-            <Route element={<AdminLayout />}>
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              <Route path="/admin/members" element={<AdminMembers />} />
-              <Route path="/admin/members/:id" element={<AdminMemberDetail />} />
-              <Route path="/admin/attendance" element={<AdminAttendance />} />
-              <Route path="/admin/questions" element={<AdminQuestions />} />
+      <AuthProvider>
+        <Router>
+          <ScrollToTop />
+          <Routes>
+            {/* Public site */}
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/teachings" element={<Teachings />} />
+              <Route path="/teachings/:id" element={<TeachingDetail />} />
+              <Route path="/activities" element={<Activities />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/location" element={<Location />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/leaders" element={<Leaders />} />
+              <Route path="/ministries" element={<Ministries />} />
+              <Route path="/beliefs" element={<Beliefs />} />
+              <Route path="/roasters" element={<Roasters />} />
+              <Route path="/donation" element={<Donation />} />
             </Route>
-          </Route>
-        </Routes>
-      </Router>
+
+            {/* Members portal (unified login) */}
+            <Route path="/members" element={<Members />} />
+
+            {/* Protected Portal Routes */}
+            <Route element={<AuthGuard />}>
+              {/* Member Dashboard */}
+              <Route path="/dashboard" element={<MembersDashboardWrapper />} />
+
+              {/* Admin layout and routes */}
+              <Route element={<AdminLayout />}>
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/admin/members" element={<AdminMembers />} />
+                <Route path="/admin/members/:id" element={<AdminMemberDetail />} />
+                <Route path="/admin/attendance" element={<AdminAttendance />} />
+                <Route path="/admin/questions" element={<AdminQuestions />} />
+              </Route>
+            </Route>
+
+            {/* Catch-all fallback */}
+            <Route path="/admin/*" element={<Navigate to="/admin/dashboard" replace />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
     </>
   );
 }

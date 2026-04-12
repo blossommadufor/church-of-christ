@@ -1,26 +1,43 @@
 import React, { useState } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { hasPermission } from "../../utils/permissions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faGauge, faUsers, faSignOut, faBars, faXmark, faCalendarCheck, faComments
+    faGauge, faUsers, faSignOut, faBars, faXmark, faCalendarCheck, faComments, faUser
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../../public/assets/logo3.png";
 
-const navItems = [
-    { to: "/admin/dashboard", icon: faGauge, label: "Dashboard" },
-    { to: "/admin/members", icon: faUsers, label: "Members" },
-    { to: "/admin/attendance", icon: faCalendarCheck, label: "Attendance" },
-    { to: "/admin/questions", icon: faComments, label: "Questions" },
-];
+const getNavItems = (user) => {
+    const items = [
+        { to: "/admin/dashboard", icon: faGauge, label: "Dashboard" },
+        { to: "/admin/members", icon: faUsers, label: "Members" },
+    ];
+
+    if (hasPermission(user, 'ATTENDANCE_VIEW') || hasPermission(user, 'ATTENDANCE_MARK')) {
+        items.push({ to: "/admin/attendance", icon: faCalendarCheck, label: "Attendance" });
+    }
+
+    // Default assume everyone with ADMIN role can see questions for now
+    items.push({ to: "/admin/questions", icon: faComments, label: "Questions" });
+
+    // Self-service link
+    items.push({ to: "/dashboard", icon: faUser, label: "Member Portal" });
+
+    return items;
+};
 
 const AdminLayout = () => {
     const navigate = useNavigate();
+    const { user, logout } = useAuth();
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const handleSignOut = () => {
-        sessionStorage.removeItem("adminAuth");
-        navigate("/admin/login");
+        logout();
+        navigate("/members");
     };
+
+    const navItems = getNavItems(user);
 
     const SidebarContent = () => (
         <div className="flex flex-col h-full">

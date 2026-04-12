@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Select from "react-select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
@@ -10,6 +11,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { adminServices } from "../../services/adminServices";
 import { buildQueryParams } from "../../utils/analyticsUtils";
+import { useAuth } from "../../context/AuthContext";
+import { hasPermission } from "../../utils/permissions";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -77,6 +80,20 @@ const AdminAttendance = () => {
   // ── Detail view state ─────────────────────────────────────────────────────
   const [selected, setSelected] = useState(null);
   const [detailView, setDetailView] = useState("present");
+  
+  // ── Modals / Forms ────────────────────────────────────────────────────────
+  const [showMarkModal, setShowMarkModal] = useState(false);
+  const [markForm, setMarkForm] = useState({ memberId: null, status: "Present" });
+  const [submittingMark, setSubmittingMark] = useState(false);
+
+  const [showAbsentModal, setShowAbsentModal] = useState(false);
+  const [absentDate, setAbsentDate] = useState("");
+  const [absentMembersList, setAbsentMembersList] = useState([]);
+  const [fetchingAbsentees, setFetchingAbsentees] = useState(false);
+
+  const { user, members } = useAuth();
+  const canView = hasPermission(user, "ATTENDANCE_VIEW") || hasPermission(user, "ATTENDANCE_MARK");
+  const canMark = hasPermission(user, "ATTENDANCE_MARK") || hasPermission(user, "DO_ALL");
 
   // ── Fetch ──────────────────────────────────────────────────────────────────
 
@@ -113,8 +130,10 @@ const AdminAttendance = () => {
         setIsLoading(false);
       }
     };
-    fetchAttendance();
-  }, [month, year, serviceDay, search, page]);
+    if (canView) {
+      fetchAttendance();
+    }
+  }, [month, year, serviceDay, search, page, canView]);
 
   const handleSearch = (v) => {
     setSearch(v);
@@ -134,6 +153,50 @@ const AdminAttendance = () => {
   };
 
   // ── Detail view (grouped by date) ─────────────────────────────────────────
+
+  const handleMarkSubmit = async () => {
+    if (!markForm.memberId) return;
+    setSubmittingMark(true);
+    try {
+      await adminServices.markAttendance({
+        memberId: markForm.memberId,
+        status: markForm.status
+      });
+      alert("Attendance marked successfully");
+      setShowMarkModal(false);
+      setMarkForm({ memberId: null, status: "Present" });
+    } catch (err) {
+      console.error(err);
+      alert("Failed to mark attendance.");
+    } finally {
+      setSubmittingMark(false);
+    }
+  };
+
+  const handleFetchAbsentees = async () => {
+    if (!absentDate) return;
+    setFetchingAbsentees(true);
+    try {
+      const res = await adminServices.getAbsentMembers(absentDate);
+      setAbsentMembersList(res?.data || res || []);
+    } catch (err) {
+      console.error(err);
+      setAbsentMembersList([]);
+      alert("Failed to fetch absentees.");
+    } finally {
+      setFetchingAbsentees(false);
+    }
+  };
+
+  if (!canView) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <FontAwesomeIcon icon={faUsers} className="text-4xl text-gray-300 mb-4" />
+        <h2 className="text-xl font-bold text-gray-700">Access Denied</h2>
+        <p className="text-gray-500 mt-2">You do not have permission to view attendance records.</p>
+      </div>
+    );
+  }
 
   if (selected) {
     const groups = { present: [], absent: [], sick: [], traveled: [] };
@@ -250,6 +313,22 @@ const AdminAttendance = () => {
           <p className="text-gray-500 text-base mt-1">
             Browse and search attendance records.
           </p>
+        </div>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowAbsentModal(true)}
+            className="px-5 py-2.5 bg-white border-2 border-gray-200 text-gray-700 font-bold rounded-xl shadow-sm hover:border-gray-300 transition"
+          >
+            View Absent Members
+          </button>
+          {canMark && (
+            <button
+              onClick={() => setShowMarkModal(true)}
+              className="px-5 py-2.5 bg-primary text-white font-bold rounded-xl shadow-sm hover:bg-light transition"
+            >
+              Mark Attendance
+            </button>
+          )}
         </div>
       </div>
 
@@ -444,6 +523,118 @@ const AdminAttendance = () => {
           </div>
         )}
       </div>
+
+      {/* MARK ATTENDANCE MODAL */}
+      {showMarkModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+              <h2 className="text-primary font-bold text-lg">Mark Member Attendance</h2>
+              <button onClick={() => setShowMarkModal(false)} className="text-gray-400 hover:text-gray-600 transition text-xl font-bold">&times;</button>
+            </div>
+            <div className="p-6 space-y-5">
+              <div>
+                <label className="text-sm font-semibold text-gray-700 mb-1.5 block">Select Member</label>
+                <Select
+                  options={(Array.isArray(members) ? members : []).map((u) => {
+                    const m = u.member || {};
+                    return {
+                      value: u._id,
+                      label: `${m.firstName || u.name || ''} ${m.lastName || ''}`.trim() || 'Unknown'
+                    };
+                  })}
+                  onChange={(opt) => setMarkForm(p => ({ ...p, memberId: opt?.value }))}
+                  placeholder="Search a member..."
+                  className="text-sm"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-semibold text-gray-700 mb-1.5 block">Status</label>
+                <select 
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 outline-none focus:ring-2 focus:ring-light/30 transition text-sm text-gray-700"
+                  value={markForm.status}
+                  onChange={(e) => setMarkForm(p => ({ ...p, status: e.target.value }))}
+                >
+                  <option value="Present">Present</option>
+                  <option value="Sick">Sick</option>
+                  <option value="Traveled">Traveled</option>
+                </select>
+              </div>
+            </div>
+            <div className="px-6 py-5 bg-gray-50 flex gap-3 border-t border-gray-100">
+              <button 
+                onClick={() => setShowMarkModal(false)}
+                className="flex-1 py-2.5 font-bold text-gray-600 border-2 border-gray-200 rounded-xl hover:border-gray-300 transition"
+              >
+                Cancel
+              </button>
+              <button 
+                disabled={!markForm.memberId || submittingMark}
+                onClick={handleMarkSubmit}
+                className="flex-1 py-2.5 font-bold text-white bg-primary rounded-xl hover:bg-light transition disabled:opacity-50"
+              >
+                {submittingMark ? "Submitting..." : "Mark Status"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ABSENT MEMBERS MODAL */}
+      {showAbsentModal && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden">
+            <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white flex-shrink-0">
+              <h2 className="text-primary font-bold text-lg">Absent Members Lookup</h2>
+              <button onClick={() => setShowAbsentModal(false)} className="text-gray-400 hover:text-gray-600 transition text-lg px-2">&times;</button>
+            </div>
+            <div className="p-6 border-b border-gray-100 bg-gray-50 flex items-end gap-4 flex-shrink-0">
+              <div className="flex-1">
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 block">Select Service Date</label>
+                <input 
+                  type="date"
+                  value={absentDate}
+                  onChange={(e) => {
+                     const d = new Date(e.target.value);
+                     // Allow Sundays only
+                     if(d.getDay() !== 0) {
+                         alert("Please select a Sunday.");
+                         return;
+                     }
+                     setAbsentDate(e.target.value);
+                  }}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-light"
+                />
+              </div>
+              <button
+                disabled={fetchingAbsentees || !absentDate}
+                onClick={handleFetchAbsentees}
+                className="bg-primary text-white font-bold py-2.5 px-6 rounded-xl hover:bg-light transition disabled:opacity-50"
+              >
+                {fetchingAbsentees ? "Loading..." : "Fetch Records"}
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto min-h-[200px] flex-1">
+              {absentMembersList.length === 0 ? (
+                <div className="text-center py-10">
+                   <p className="text-gray-400 text-sm font-medium">Select a service date to view absentees.</p>
+                </div>
+              ) : (
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-100 border-b border-gray-200 text-left text-gray-500 rounded-xl overflow-hidden">
+                    <tr><th className="px-4 py-3">#</th><th className="px-4 py-3">Member Name</th><th className="px-4 py-3">Phone</th></tr>
+                  </thead>
+                  <tbody>
+                    {absentMembersList.map((m, i) => (
+                      <tr key={i} className="border-b border-gray-50"><td className="px-4 py-3 text-gray-400">{i+1}</td><td className="px-4 py-3 font-semibold text-primary">{m.firstName || m.name || ''} {m.lastName || ''}</td><td className="px-4 py-3 text-gray-500">{m.phone || 'N/A'}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

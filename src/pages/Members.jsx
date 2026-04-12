@@ -1,33 +1,29 @@
 import React, { useState } from "react";
+import { Navigate } from "react-router-dom";
 import MembersLogin from "../components/members/MembersLogin";
 import MembersOtp from "../components/members/MembersOtp";
-import MembersDashboard from "../components/members/MembersDashboard";
+import { useAuth } from "../context/AuthContext";
 
-// screen: "login" | "otp" | "dashboard"
 const Members = () => {
+    const { isAuthenticated, user } = useAuth();
     const [screen, setScreen] = useState("login");
     const [phone, setPhone] = useState("");
     const [userId, setUserId] = useState("");
     const [otpHint, setOtpHint] = useState("");
-    const [member, setMember] = useState(null);
+
+    // If fully authenticated, redirect automatically
+    if (isAuthenticated) {
+        if (user?.roles?.includes("ADMIN")) {
+            return <Navigate to="/admin/dashboard" replace />;
+        }
+        return <Navigate to="/dashboard" replace />;
+    }
 
     const handleOtpSent = (ph, id, hint) => {
         setPhone(ph);
         setUserId(id);
         setOtpHint(hint);
         setScreen("otp");
-    };
-
-    const handleVerified = (memberData) => {
-        setMember(memberData);
-        setScreen("dashboard");
-    };
-
-    const handleSignOut = () => {
-        setMember(null);
-        setPhone("");
-        setUserId("");
-        setScreen("login");
     };
 
     return (
@@ -38,12 +34,8 @@ const Members = () => {
                     phone={phone}
                     userId={userId}
                     hint={otpHint}
-                    onVerified={handleVerified}
                     onBack={() => setScreen("login")}
                 />
-            )}
-            {screen === "dashboard" && member && (
-                <MembersDashboard member={member} onSignOut={handleSignOut} />
             )}
         </>
     );

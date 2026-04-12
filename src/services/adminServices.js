@@ -39,4 +39,12 @@ export const adminServices = {
     );
     return response.data;
   },
+  markAttendance: async ({ memberId, ...payload }) => {
+    const response = await apiClient.post(`/attendance/mark/${memberId}`, payload);
+    return response.data;
+  },
+  getAbsentMembers: async (date) => {
+    const response = await apiClient.get(`/attendance/get-absent-members-for-a-worship?date=${date}&serviceDay=Sunday&page=1`);
+    return response.data;
+  },
 };
