@@ -25,6 +25,14 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
+        // Global 401 interception
+        if (error.response && error.response.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('member');
+            window.location.href = '/members';
+        }
+
         // Extract server-provided message if available
         if (error.response && error.response.data && error.response.data.message) {
             return Promise.reject(new Error(error.response.data.message));

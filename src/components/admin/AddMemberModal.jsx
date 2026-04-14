@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import CustomSelect from "../CustomSelect";
+import DateInput from "../DateInput";
 import NaijaStates from "naija-state-local-government";
 import { adminServices } from "../../services/adminServices";
 
@@ -49,6 +50,7 @@ const AddMemberModal = ({ onClose, onAdd, initialData }) => {
             };
         }
         return {
+            prefix: "BRO",
             firstName: "", lastName: "", email: "", phone: "",
             state: "", lga: "", gender: "male", maritalStatus: "single",
             preacherName: "", preacherContact: "",
@@ -168,6 +170,12 @@ const AddMemberModal = ({ onClose, onAdd, initialData }) => {
                     <div>
                         <p className="text-sm text-primary font-bold uppercase tracking-widest mb-3 border-b pb-1">Basic Information</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {field("Prefix", (
+                                <select className={inputCls} value={form.prefix} onChange={set("prefix")}>
+                                    <option value="BRO">BRO</option>
+                                    <option value="SIS">SIS</option>
+                                </select>
+                            ), true)}
                             {field("First Name", <input className={inputCls} placeholder="Enter first name" value={form.firstName} onChange={set("firstName")} />, true)}
                             {field("Last Name", <input className={inputCls} placeholder="Enter last name" value={form.lastName} onChange={set("lastName")} />, true)}
                             {field("Phone Number", <input className={inputCls} placeholder="Enter phone number" value={form.phone} onChange={set("phone")} />, true)}
@@ -216,12 +224,12 @@ const AddMemberModal = ({ onClose, onAdd, initialData }) => {
                     <div>
                         <p className="text-sm text-primary font-bold uppercase tracking-widest mb-3 border-b pb-1">Church Details</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {field("Date Baptised", <input type="date" className={inputCls} value={form.dateBaptised} onChange={set("dateBaptised")} />, true)}
-                            {field("Date Joined", <input type="date" className={inputCls} value={form.dateJoined} onChange={set("dateJoined")} />)}
+                            {field("Date Baptised", <DateInput className={inputCls} value={form.dateBaptised} onChange={set("dateBaptised")} />, true)}
+                            {field("Date Joined", <DateInput className={inputCls} value={form.dateJoined} onChange={set("dateJoined")} />)}
                             {field("Home Congregation", <input className={inputCls} placeholder="Enter congregation name" value={form.homeCongregation} onChange={set("homeCongregation")} />)}
                             {field("Previous Congregation (Optional)", <input className={inputCls} placeholder="Where did you worship last?" value={form.congregationLastWorship} onChange={set("congregationLastWorship")} />)}
                             {field("Preacher Name (Optional)", <input className={inputCls} placeholder="Enter preacher name" value={form.preacherName} onChange={set("preacherName")} />)}
-                            {field("Preacher Contact", <input className={inputCls} placeholder="Enter preacher contact" value={form.preacherContact} onChange={set("preacherContact")} />)}
+                            {field("Preacher Contact (Optional)", <input className={inputCls} placeholder="Enter preacher contact" value={form.preacherContact} onChange={set("preacherContact")} />)}
 
                             {field("House Fellowship", (
                                 <select className={inputCls} value={form.houseFellowship} onChange={set("houseFellowship")}>

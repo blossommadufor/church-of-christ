@@ -5,9 +5,24 @@ import { useAuth } from "../../context/AuthContext";
 
 const MembersProfile = ({ onBack }) => {
     const { user, member } = useAuth();
+    console.log(member)
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState(null);
     const [preview, setPreview] = useState(member?.profilePicture || null);
+
+    const handleFileChange = (e) => {
+        const selected = e.target.files[0];
+        if (selected) {
+            setFile(selected);
+            setPreview(URL.createObjectURL(selected));
+        }
+    };
+
+    const handleUpload = () => {
+        // UI-only for now
+        console.log("File ready for API upload ->", file);
+        setFile(null);
+    };
 
     const displayName = user?.name || `${member?.firstName || ''} ${member?.lastName || ''}`.trim() || 'Member Name';
     const displayEmail = user?.email || member?.email || 'N/A';
@@ -38,7 +53,7 @@ const MembersProfile = ({ onBack }) => {
 
             <div className="max-w-5xl mx-auto w-full px-4 py-10 flex-1">
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col lg:flex-row gap-10">
-                    
+
                     {/* Left Sidebar (Avatar and basic Identity) */}
                     <div className="flex flex-col items-center lg:w-1/3">
                         <div className="relative mb-6">
@@ -79,7 +94,7 @@ const MembersProfile = ({ onBack }) => {
                     {/* Right Details Grid */}
                     <div className="flex-1">
                         <h2 className="text-xl font-bold text-gray-800 mb-6 border-b border-gray-100 pb-2">Personal Information</h2>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                             {/* Contact Info */}
                             <div>
@@ -108,7 +123,7 @@ const MembersProfile = ({ onBack }) => {
                                 <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Date of Birth</p>
                                 <p className="text-gray-800 font-medium">{displayDob}</p>
                             </div>
-                            
+
                             {/* Origin */}
                             <div>
                                 <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">State of Origin</p>

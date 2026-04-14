@@ -15,6 +15,7 @@ import AddMemberModal from "../../components/admin/AddMemberModal";
 import BulkUploadModal from "../../components/admin/BulkUploadModal";
 import { adminServices } from "../../services/adminServices";
 import { buildQueryParams } from "../../utils/analyticsUtils";
+import { exportToExcel } from "../../utils/exportUtils";
 
 // ─── Search field options ────────────────────────────────────────────────────
 
@@ -32,6 +33,7 @@ const AdminMembers = () => {
   const [totalMembers, setTotalMembers] = useState(0);
   const [searchField, setSearchField] = useState(SEARCH_FIELDS[0]);
   const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,13 +46,18 @@ const AdminMembers = () => {
   // ── Fetch ──────────────────────────────────────────────────────────────────
 
   React.useEffect(() => {
+    const handler = setTimeout(() => setDebouncedSearch(searchValue), 1000);
+    return () => clearTimeout(handler);
+  }, [searchValue]);
+
+  React.useEffect(() => {
     const fetchMembers = async () => {
       setIsLoading(true);
       try {
         // Build query: only populate the matching search param, leave others empty
         const params = { pageNumber: page };
-        if (searchValue.trim()) {
-          params[searchField.param] = searchValue.trim();
+        if (debouncedSearch.trim()) {
+          params[searchField.param] = debouncedSearch.trim();
         }
         const qs = `?${buildQueryParams(params)}`;
         const res = await adminServices.getAllMembers(qs);
@@ -67,7 +74,7 @@ const AdminMembers = () => {
       }
     };
     fetchMembers();
-  }, [page, searchValue, searchField, refreshTrigger]);
+  }, [page, debouncedSearch, searchField, refreshTrigger]);
 
   const handleSearchInput = (v) => {
     setSearchValue(v);
@@ -107,6 +114,22 @@ const AdminMembers = () => {
     setDeleting(null);
   };
 
+  const handleExport = () => {
+    const exportData = members.map((user) => {
+      const m = user.member || {};
+      const prefix = m.prefix || (m.gender?.toLowerCase() === "female" ? "SIS." : "BRO.");
+      return {
+        "Name": `${prefix} ${m.firstName || ""} ${m.lastName || ""}`.trim(),
+        "Phone": m.phone || "—",
+        "Email": m.email || "—",
+        "Role": user.role || "—",
+        "Gender": m.gender || "—",
+        "Date Baptised": m.dateBaptised ? new Date(m.dateBaptised).toLocaleDateString() : "—",
+      };
+    });
+    exportToExcel(exportData, `Members_Export_${new Date().getTime()}.xlsx`);
+  };
+
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
@@ -119,7 +142,13 @@ const AdminMembers = () => {
             {totalMembers} registered members
           </p>
         </div>
-        <div className="flex gap-3 flex-wrap">
+        <div>
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 font-semibold rounded-xl shadow-sm hover:border-gray-300 transition text-base"
+          >
+            Export to Excel
+          </button>
           <button
             onClick={() => setShowUpload(true)}
             className="flex items-center gap-2 px-4 py-2.5 border-2 border-light text-light font-semibold rounded-xl hover:bg-light hover:text-white transition text-base"
@@ -134,8 +163,6 @@ const AdminMembers = () => {
           </button>
         </div>
       </div>
-
-      {/* Advanced Search */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-6">
         <div className="flex items-stretch gap-0 max-w-2xl">
           {/* Search Field Dropdown */}
@@ -156,11 +183,10 @@ const AdminMembers = () => {
                   <button
                     key={f.value}
                     onClick={() => handleFieldSelect(f)}
-                    className={`w-full text-left px-4 py-2.5 text-sm font-medium transition hover:bg-gray-50 ${
-                      searchField.value === f.value
+                    className={`w-full text-left px-4 py-2.5 text-sm font-medium transition hover:bg-gray-50 ${searchField.value === f.value
                         ? "text-light font-semibold bg-light/5"
                         : "text-gray-700"
-                    }`}
+                      }`}
                   >
                     {f.label}
                   </button>
@@ -232,6 +258,7 @@ const AdminMembers = () => {
                       className="border-b border-gray-50 hover:bg-gray-50 transition"
                     >
                       <td className="px-5 py-4 font-semibold text-primary whitespace-nowrap">
+                        <span className="text-gray-400 font-bold text-xs mr-2">{m.prefix || (m.gender?.toLowerCase() === "female" ? "SIS." : "BRO.")}</span>
                         {m.firstName} {m.lastName}
                       </td>
                       <td className="px-5 py-4 text-gray-600 whitespace-nowrap">
@@ -243,11 +270,10 @@ const AdminMembers = () => {
                       </td>
                       <td className="px-5 py-4">
                         <span
-                          className={`capitalize px-3 py-1 rounded-full text-xs font-bold ${
-                            m.gender?.toLowerCase() === "female"
+                          className={`capitalize px-3 py-1 rounded-full text-xs font-bold ${m.gender?.toLowerCase() === "female"
                               ? "bg-pink-100 text-pink-600"
                               : "bg-blue-100 text-blue-600"
-                          }`}
+                            }`}
                         >
                           {m.gender || "—"}
                         </span>

@@ -6,6 +6,7 @@ import {
   faCheckCircle,
   faTimesCircle,
   faEdit,
+  faCamera,
 } from "@fortawesome/free-solid-svg-icons";
 import AddMemberModal from "../../components/admin/AddMemberModal";
 import { adminServices } from "../../services/adminServices";
@@ -63,6 +64,25 @@ const AdminMemberDetail = () => {
 
   const [year, setYear] = useState(years[0] || "All");
   const [showEdit, setShowEdit] = useState(false);
+  
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+
+  const currentPic = preview || profile?.profilePicture;
+
+  const handleFileChange = (e) => {
+    const selected = e.target.files[0];
+    if (selected) {
+      setFile(selected);
+      setPreview(URL.createObjectURL(selected));
+    }
+  };
+
+  const handleUpload = () => {
+    // UI-only for now
+    console.log("Admin side: File ready for API upload ->", file);
+    setFile(null);
+  };
 
   if (!user)
     return (
@@ -127,21 +147,37 @@ const AdminMemberDetail = () => {
       </div>
 
       {/* Profile header */}
-      <div className="bg-primary rounded-2xl p-6 text-white mb-6 flex items-center gap-5">
-        <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-2xl font-bold uppercase">
-          {profile.firstName?.charAt(0) || "M"}
+      <div className="bg-primary rounded-2xl p-6 text-white mb-6 flex sm:flex-row flex-col items-center gap-5">
+        <div className="relative flex-shrink-0">
+          <div className="w-20 h-20 sm:w-16 sm:h-16 rounded-full bg-white/20 flex items-center justify-center text-2xl font-bold uppercase overflow-hidden border-2 border-white/20">
+            {currentPic ? (
+              <img src={currentPic} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              profile.firstName?.charAt(0) || "M"
+            )}
+          </div>
+          <label className="absolute bottom-0 right-0 w-7 h-7 bg-white text-primary rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-gray-100 transition">
+            <FontAwesomeIcon icon={faCamera} className="text-xs" />
+            <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+          </label>
         </div>
-        <div>
+        
+        <div className="flex-1 text-center sm:text-left">
           <h1 className="text-2xl font-bold">
             {profile.firstName} {profile.lastName}
           </h1>
-          <div className="flex items-center gap-3 mt-1">
+          <div className="flex sm:flex-row flex-col items-center gap-3 mt-1 justify-center sm:justify-start">
             <p className="text-blue-300 text-sm capitalize">
               {profile.homeCongregation} Congregation
             </p>
             <span className="bg-blue-400/20 text-blue-100 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
               {userRole}
             </span>
+            {file && (
+              <button onClick={handleUpload} className="bg-white text-primary px-3 py-1 text-xs rounded-full font-bold shadow-sm hover:bg-gray-50 transition ml-0 sm:ml-4">
+                Upload New Image
+              </button>
+            )}
           </div>
         </div>
       </div>

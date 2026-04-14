@@ -14,8 +14,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { adminServices } from "../../services/adminServices";
 import { formatDate, formatMonth } from "../../utils/analyticsUtils";
-const token = localStorage.getItem('token');
-console.log('Token', token)
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -40,7 +38,8 @@ const YEARS = Array.from({ length: 8 }, (_, i) => currentYear - 4 + i);
 const PRESETS = [
   { key: "year", label: "This Year" },
   { key: "month", label: "This Month" },
-  { key: "today", label: "Today" },
+  { key: "last_sunday", label: "Last Sunday" },
+  { key: "today", label: "Today", condition: () => new Date().getDay() === 0 },
   { key: "custom", label: "Custom…" },
 ];
 
@@ -61,6 +60,17 @@ const paramsFromFilter = (filter) => {
       date: now.toISOString().split("T")[0],
     };
   }
+  if (filter.preset === "last_sunday") {
+    const lastSunday = new Date(now);
+    // If today is Sunday (0), last Sunday is 7 days ago. Otherwise, it's the `getDay()` offset.
+    const diff = lastSunday.getDay() === 0 ? 7 : lastSunday.getDay();
+    lastSunday.setDate(lastSunday.getDate() - diff);
+    return {
+      year: lastSunday.getFullYear(),
+      month: lastSunday.getMonth() + 1,
+      date: lastSunday.toISOString().split("T")[0],
+    };
+  }
   // custom
   const { year, month, day } = filter;
   const params = {};
@@ -77,6 +87,7 @@ const paramsFromFilter = (filter) => {
 const filterLabel = (filter) => {
   if (filter.preset === "year") return "This Year";
   if (filter.preset === "month") return "This Month";
+  if (filter.preset === "last_sunday") return "Last Sunday";
   if (filter.preset === "today") return "Today";
   // custom
   const { year, month, day } = filter;
@@ -259,7 +270,7 @@ const FilterDropdown = ({ filter, onChange }) => {
 
         {open && (
           <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl z-30 overflow-hidden py-1">
-            {PRESETS.map((p) => (
+            {PRESETS.filter((p) => !p.condition || p.condition()).map((p) => (
               <button
                 key={p.key}
                 onClick={() => handlePreset(p.key)}
@@ -502,9 +513,7 @@ const AdminDashboard = () => {
               icon={faChartLine}
               label="Attendance %"
               value={
-                Number.isFinite(Number(summary.attendancePercentage))
-                  ? `${Number(summary.attendancePercentage).toFixed(1)}%`
-                  : "—"
+                summary.attendancePercentage
               }
               color="bg-light"
               textColor="text-light"
@@ -513,9 +522,7 @@ const AdminDashboard = () => {
               icon={faPercent}
               label="Absence %"
               value={
-                Number.isFinite(Number(summary.absentPercentage))
-                  ? `${Number(summary.absentPercentage).toFixed(1)}%`
-                  : "—"
+                summary.absentPercentage
               }
               color="bg-orange-400"
               textColor="text-orange-500"

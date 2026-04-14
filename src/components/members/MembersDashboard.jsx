@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,10 +9,13 @@ import {
     faSignOut,
     faCalendarCheck,
     faUser,
+    faBars,
+    faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../../public/assets/logo3.png";
 import MembersProfile from "./MembersProfile";
 import { memberServices } from "../../services/memberServices";
+import { adminServices } from "../../services/adminServices";
 
 const getWelcomeName = (member, user) => {
     const firstName = member?.firstName || member?.name?.split(' ')[0] || user?.name?.split(' ')[0] || 'Member';
@@ -34,14 +37,33 @@ const MembersDashboard = ({ member, onSignOut }) => {
     const isAdmin = user?.roles?.includes("ADMIN") || user?.role === "ADMIN" || user?.permissions?.includes("DO_ALL");
 
     const [activeTab, setActiveTab] = useState("dashboard");
+    const [mobileNavOpen, setMobileNavOpen] = useState(false);
     const [attended, setAttended] = useState(member.attended);
     const [missed] = useState(member.missed);
+
+    useEffect(() => {
+        const fetchHistory = async () => {
+            try {
+                // Fetch attendance matching this member's ID
+                // const history = await adminServices.getMemberAnalytics();
+                // console.log("=== API: Member Attendance History ===", history);
+            } catch (error) {
+                console.error("Error fetching history:", error);
+            }
+        };
+        fetchHistory();
+    }, [member._id, member.userId]);
 
     // Day logic
     const today = new Date();
     const dayOfWeek = today.getDay(); // 0 = Sunday, 4 = Thursday
     const isServiceDay = dayOfWeek === 0 || dayOfWeek === 4;
     const serviceName = dayOfWeek === 0 ? "General Worship" : dayOfWeek === 4 ? "Bible Study" : "Service";
+
+    const hour = today.getHours();
+    let greeting = "Good Evening";
+    if (hour < 12) greeting = "Good Morning";
+    else if (hour < 18) greeting = "Good Afternoon";
 
     const [attStep, setAttStep] = useState(() => {
         if (!isServiceDay) return "not_service_day";
@@ -96,9 +118,9 @@ const MembersDashboard = ({ member, onSignOut }) => {
 
         try {
             await memberServices.markAttendance({
-                 status: finalStatus,
-                 lat: finalStatus === "Present" && coords?.lat ? parseFloat(coords.lat) : null,
-                 lng: finalStatus === "Present" && coords?.lng ? parseFloat(coords.lng) : null
+                status: finalStatus,
+                lat: finalStatus === "Present" && coords?.lat ? parseFloat(coords.lat) : null,
+                lng: finalStatus === "Present" && coords?.lng ? parseFloat(coords.lng) : null
             });
             if (finalStatus === "Present") {
                 setAttended((a) => a + 1);
@@ -123,8 +145,8 @@ const MembersDashboard = ({ member, onSignOut }) => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <div className="bg-primary px-6 py-4 flex items-center justify-between shadow-md">
+        <div className="min-h-screen bg-gray-50 flex flex-col">
+            <div className="bg-primary px-6 py-4 flex items-center justify-between shadow-md relative z-50">
                 <a href="/" className="flex items-center gap-3 hover:opacity-80 transition">
                     <img src={logo} alt="logo" className="w-10" />
                     <div>
@@ -132,37 +154,59 @@ const MembersDashboard = ({ member, onSignOut }) => {
                         <p className="text-blue-300 text-xs">Church of Christ, Nyanya</p>
                     </div>
                 </a>
-                <div className="flex items-center gap-6">
+
+                {/* Desktop Nav */}
+                <div className="hidden md:flex items-center gap-6">
                     {isAdmin && (
-                        <a
-                            href="/admin/dashboard"
-                            className="flex items-center gap-2 text-primary-200 text-blue-300 hover:text-white text-sm font-semibold transition"
-                        >
+                        <a href="/admin/dashboard" className="flex items-center gap-2 text-primary-200 text-blue-300 hover:text-white text-sm font-semibold transition">
                             Admin Portal
                         </a>
                     )}
-                    <button
-                        onClick={() => setActiveTab("profile")}
-                        className="flex items-center gap-2 text-gray-300 hover:text-white text-sm font-semibold transition"
-                    >
-                        <FontAwesomeIcon icon={faUser} />
-                        Profile
+                    <button onClick={() => setActiveTab("dashboard")} className="flex items-center gap-2 text-gray-300 hover:text-white text-sm font-semibold transition">
+                        Dashboard
                     </button>
-                    <button
-                        onClick={onSignOut}
-                        className="flex items-center gap-2 text-red-300 hover:text-red-400 text-sm font-semibold transition"
-                    >
-                        <FontAwesomeIcon icon={faSignOut} />
-                        Sign Out
+                    <button onClick={() => setActiveTab("profile")} className="flex items-center gap-2 text-gray-300 hover:text-white text-sm font-semibold transition">
+                        <FontAwesomeIcon icon={faUser} /> Profile
+                    </button>
+                    <button onClick={onSignOut} className="flex items-center gap-2 text-red-300 hover:text-red-400 text-sm font-semibold transition">
+                        <FontAwesomeIcon icon={faSignOut} /> Sign Out
                     </button>
                 </div>
+
+                {/* Mobile Hamburger Toggle */}
+                <button
+                    onClick={() => setMobileNavOpen(!mobileNavOpen)}
+                    className="md:hidden text-white text-xl p-2 w-10 h-10 flex items-center justify-center hover:bg-white/10 rounded-lg transition"
+                >
+                    <FontAwesomeIcon icon={mobileNavOpen ? faXmark : faBars} />
+                </button>
+
+                {/* Mobile Dropdown */}
+                {mobileNavOpen && (
+                    <div className="md:hidden absolute top-full left-0 right-0 bg-primary/95 backdrop-blur-md shadow-xl border-t border-white/10 flex flex-col px-6 py-2 pb-6 animate-fade-in">
+                        {isAdmin && (
+                            <a href="/admin/dashboard" className="py-3 text-blue-200 hover:text-white font-semibold border-b border-light/20 flex items-center gap-3">
+                                Admin Portal
+                            </a>
+                        )}
+                        <button onClick={() => { setActiveTab("dashboard"); setMobileNavOpen(false); }} className="py-3 text-left text-gray-200 hover:text-white font-semibold border-b border-light/20">
+                            Dashboard
+                        </button>
+                        <button onClick={() => { setActiveTab("profile"); setMobileNavOpen(false); }} className="py-3 text-left text-gray-200 hover:text-white font-semibold border-b border-light/20">
+                            Profile
+                        </button>
+                        <button onClick={() => { onSignOut(); setMobileNavOpen(false); }} className="py-3 text-left text-red-300 hover:text-red-400 font-semibold tracking-wide">
+                            Sign Out
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Main content */}
-            <div className="max-w-lg mx-auto px-4 py-10">
+            <div className="max-w-lg mx-auto w-full px-4 py-8 md:py-10 flex-1">
                 {/* Welcome */}
                 <div className="mb-8">
-                    <p className="text-gray-500 text-base">Welcome back,</p>
+                    <p className="text-gray-500 text-base font-medium">{greeting},</p>
                     <h1 className="text-primary text-2xl font-bold">{getWelcomeName(member, user)}</h1>
                     <p className="text-gray-400 text-xs mt-1">Member ID: {member?.idCardNumber || member?.userId || 'N/A'}</p>
                 </div>

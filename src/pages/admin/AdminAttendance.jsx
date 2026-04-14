@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Select from "react-select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
@@ -13,6 +12,9 @@ import { adminServices } from "../../services/adminServices";
 import { buildQueryParams } from "../../utils/analyticsUtils";
 import { useAuth } from "../../context/AuthContext";
 import { hasPermission } from "../../utils/permissions";
+import DateInput from "../../components/DateInput";
+import MemberSearchSelect from "../../components/admin/MemberSearchSelect";
+import { exportToExcel } from "../../utils/exportUtils";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -178,7 +180,7 @@ const AdminAttendance = () => {
     setFetchingAbsentees(true);
     try {
       const res = await adminServices.getAbsentMembers(absentDate);
-      setAbsentMembersList(res?.data || res || []);
+      setAbsentMembersList(res?.data?.absentees || []);
     } catch (err) {
       console.error(err);
       setAbsentMembersList([]);
@@ -186,6 +188,27 @@ const AdminAttendance = () => {
     } finally {
       setFetchingAbsentees(false);
     }
+  };
+
+  const handleExport = () => {
+    const exportData = attendance.map((record, idx) => {
+      const date = record.date ?? record.serviceDate ?? record._id ?? `Record ${idx + 1}`;
+      const present = record.presentCount ?? record.present ?? 0;
+      const absent = record.absentCount ?? record.absent ?? 0;
+      const sick = record.sickCount ?? record.sick ?? 0;
+      const traveled = record.traveledCount ?? record.traveled ?? 0;
+      const total = present + absent + sick + traveled;
+      const pct = total ? Math.round((present / total) * 100) : 0;
+      return {
+        "Date / Service": String(date),
+        "Present": present,
+        "Absent": absent,
+        "Sick": sick,
+        "Traveled": traveled,
+        "Attendance Rate (%)": pct
+      };
+    });
+    exportToExcel(exportData, `Attendance_Export_${new Date().getTime()}.xlsx`);
   };
 
   if (!canView) {
@@ -315,6 +338,12 @@ const AdminAttendance = () => {
           </p>
         </div>
         <div className="flex gap-3">
+          <button
+            onClick={handleExport}
+            className="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 font-bold rounded-xl shadow-sm hover:border-gray-300 transition"
+          >
+            Export to Excel
+          </button>
           <button
             onClick={() => setShowAbsentModal(true)}
             className="px-5 py-2.5 bg-white border-2 border-gray-200 text-gray-700 font-bold rounded-xl shadow-sm hover:border-gray-300 transition"
@@ -535,17 +564,9 @@ const AdminAttendance = () => {
             <div className="p-6 space-y-5">
               <div>
                 <label className="text-sm font-semibold text-gray-700 mb-1.5 block">Select Member</label>
-                <Select
-                  options={(Array.isArray(members) ? members : []).map((u) => {
-                    const m = u.member || {};
-                    return {
-                      value: u._id,
-                      label: `${m.firstName || u.name || ''} ${m.lastName || ''}`.trim() || 'Unknown'
-                    };
-                  })}
+                <MemberSearchSelect
                   onChange={(opt) => setMarkForm(p => ({ ...p, memberId: opt?.value }))}
-                  placeholder="Search a member..."
-                  className="text-sm"
+                  placeholder="Search a member by name..."
                 />
               </div>
               <div>
@@ -591,7 +612,7 @@ const AdminAttendance = () => {
             <div className="p-6 border-b border-gray-100 bg-gray-50 flex items-end gap-4 flex-shrink-0">
               <div className="flex-1">
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5 block">Select Service Date</label>
-                <input 
+                <DateInput 
                   type="date"
                   value={absentDate}
                   onChange={(e) => {
@@ -622,11 +643,23 @@ const AdminAttendance = () => {
               ) : (
                 <table className="w-full text-sm">
                   <thead className="bg-gray-100 border-b border-gray-200 text-left text-gray-500 rounded-xl overflow-hidden">
-                    <tr><th className="px-4 py-3">#</th><th className="px-4 py-3">Member Name</th><th className="px-4 py-3">Phone</th></tr>
+                    <tr>
+                      <th className="px-4 py-3">#</th>
+                      <th className="px-4 py-3">Card ID</th>
+                      <th className="px-4 py-3">Member Name</th>
+                      <th className="px-4 py-3">Gender</th>
+                      <th className="px-4 py-3">Phone Number</th>
+                    </tr>
                   </thead>
                   <tbody>
                     {absentMembersList.map((m, i) => (
-                      <tr key={i} className="border-b border-gray-50"><td className="px-4 py-3 text-gray-400">{i+1}</td><td className="px-4 py-3 font-semibold text-primary">{m.firstName || m.name || ''} {m.lastName || ''}</td><td className="px-4 py-3 text-gray-500">{m.phone || 'N/A'}</td></tr>
+                      <tr key={i} className="border-b border-gray-50 hover:bg-gray-50 transition">
+                        <td className="px-4 py-3 text-gray-400 text-xs font-mono">{i+1}</td>
+                        <td className="px-4 py-3 text-gray-500 font-mono">{m.idCardNumber || '—'}</td>
+                        <td className="px-4 py-3 font-semibold text-primary capitalize">{m.firstName || m.name || ''} {m.lastName || ''}</td>
+                        <td className="px-4 py-3 text-gray-500 capitalize">{m.gender || '—'}</td>
+                        <td className="px-4 py-3 text-gray-500">{m.phone || '—'}</td>
+                      </tr>
                     ))}
                   </tbody>
                 </table>

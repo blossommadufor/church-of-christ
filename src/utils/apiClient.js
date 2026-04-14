@@ -2,8 +2,6 @@ import axios from 'axios';
 
 // Replace with your actual base URL or keep default for proxy
 const baseURL = import.meta.env.VITE_API_URL || '';
-const token = localStorage.getItem('token');
-console.log('Token', token)
 
 export const apiClient = axios.create({
     baseURL,
