@@ -1,14 +1,40 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faCamera, faUser, faSave, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faCamera, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../context/AuthContext";
+import AddMemberModal from "../admin/AddMemberModal";
+import { adminServices } from "../../services/adminServices";
+
+const InfoRow = ({ label, value }) => (
+  <div className="flex flex-col gap-0.5">
+    <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">
+      {label}
+    </p>
+    <p className="text-primary font-semibold text-base">{value || "—"}</p>
+  </div>
+);
+
+const fmt = (d) =>
+  d
+    ? new Date(d).toLocaleDateString("en-NG", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "—";
 
 const MembersProfile = ({ onBack }) => {
     const { user, member } = useAuth();
-    console.log(member)
-    const [loading, setLoading] = useState(false);
+    
     const [file, setFile] = useState(null);
-    const [preview, setPreview] = useState(member?.profilePicture || null);
+    const [preview, setPreview] = useState(null);
+    const [showEdit, setShowEdit] = useState(false);
+    const [localMember, setLocalMember] = useState(member);
+
+    const profile = localMember || {};
+    const userRole = user?.roles?.join(', ') || user?.role || profile?.role || "MEMBER";
+
+    const currentPic = preview || profile?.profilePicture;
 
     const handleFileChange = (e) => {
         const selected = e.target.files[0];
@@ -19,28 +45,25 @@ const MembersProfile = ({ onBack }) => {
     };
 
     const handleUpload = () => {
-        // UI-only for now
         console.log("File ready for API upload ->", file);
         setFile(null);
     };
 
-    const displayName = user?.name || `${member?.firstName || ''} ${member?.lastName || ''}`.trim() || 'Member Name';
-    const displayEmail = user?.email || member?.email || 'N/A';
-    const displayPhone = user?.phone || member?.phone || 'N/A';
-    const displayRole = user?.roles?.join(', ') || user?.role || member?.role || 'MEMBER';
-    const displayId = user?.idCardNumber || member?.idCardNumber || 'N/A';
-
-    const displayGender = member?.gender || 'N/A';
-    const displayAddress = member?.address || 'N/A';
-    const displayDob = member?.dateOfBirth ? new Date(member.dateOfBirth).toLocaleDateString() : 'N/A';
-    const displayBaptism = member?.dateOfBaptism ? new Date(member.dateOfBaptism).toLocaleDateString() : 'N/A';
-    const displayMarital = member?.maritalStatus || 'N/A';
-    const displayState = member?.stateOfOrigin || 'N/A';
-    const displayLga = member?.lgaOfOrigin || 'N/A';
+    const handleUpdate = async (updatedData) => {
+      try {
+        // As requested: the user can update their profile using the same endpoint as the admin
+        await adminServices.updateMember(user._id || user.id, updatedData);
+        console.log("Successfully updated via API.");
+        setLocalMember({ ...localMember, ...updatedData });
+        setShowEdit(false);
+      } catch (err) {
+        console.error("Failed to update:", err);
+      }
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
-            <div className="bg-primary px-6 py-4 flex items-center justify-between shadow-md">
+            <div className="bg-primary px-6 py-4 flex items-center justify-between shadow-md relative z-50">
                 <button
                     onClick={onBack}
                     className="flex items-center gap-2 text-gray-300 hover:text-white text-sm font-semibold transition"
@@ -51,104 +74,106 @@ const MembersProfile = ({ onBack }) => {
                 <div className="text-white font-bold text-base">My Profile</div>
             </div>
 
-            <div className="max-w-5xl mx-auto w-full px-4 py-10 flex-1">
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col lg:flex-row gap-10">
+            <div className="max-w-5xl mx-auto w-full px-4 py-8 md:py-10 flex-1">
+                <div className="flex items-center justify-end mb-6">
+                    <button
+                      onClick={() => setShowEdit(true)}
+                      className="flex items-center gap-2 px-4 py-2 border-2 border-light text-light font-semibold rounded-xl hover:bg-light hover:text-white transition text-sm bg-white shadow-sm"
+                    >
+                      <FontAwesomeIcon icon={faEdit} /> Edit Profile
+                    </button>
+                </div>
 
-                    {/* Left Sidebar (Avatar and basic Identity) */}
-                    <div className="flex flex-col items-center lg:w-1/3">
-                        <div className="relative mb-6">
-                            <div className="w-40 h-40 rounded-full border-4 border-gray-100 overflow-hidden bg-gray-50 flex items-center justify-center text-5xl text-gray-300">
-                                {preview ? (
-                                    <img src={preview} alt="Profile" className="w-full h-full object-cover" />
-                                ) : (
-                                    <FontAwesomeIcon icon={faUser} />
-                                )}
-                            </div>
-                            <label className="absolute bottom-2 right-2 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-light transition">
-                                <FontAwesomeIcon icon={faCamera} />
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="hidden"
-                                    onChange={handleFileChange}
-                                />
-                            </label>
-                        </div>
-
-                        <h1 className="text-primary text-2xl font-bold mb-1 text-center">{displayName}</h1>
-                        <p className="text-gray-500 text-base mb-2">ID: {displayId}</p>
-                        <p className="text-gray-500 text-sm font-bold uppercase mb-6 bg-gray-100 px-3 py-1 rounded-full">{displayRole}</p>
-
-                        {file && (
-                            <button
-                                onClick={handleUpload}
-                                disabled={loading}
-                                className="bg-primary text-white font-semibold py-2 px-6 rounded-xl hover:bg-light transition flex items-center gap-2 w-full justify-center"
-                            >
-                                {loading ? <FontAwesomeIcon icon={faSpinner} className="animate-spin" /> : <FontAwesomeIcon icon={faSave} />}
-                                {loading ? "Uploading..." : "Save Picture"}
-                            </button>
-                        )}
+                {/* Profile header */}
+                <div className="bg-primary rounded-2xl p-6 text-white mb-6 flex sm:flex-row flex-col items-center gap-5 shadow-sm">
+                  <div className="relative flex-shrink-0">
+                    <div className="w-20 h-20 sm:w-16 sm:h-16 rounded-full bg-white/20 flex items-center justify-center text-2xl font-bold uppercase overflow-hidden border-2 border-white/20">
+                      {currentPic ? (
+                        <img src={currentPic} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        profile.firstName?.charAt(0) || "M"
+                      )}
                     </div>
-
-                    {/* Right Details Grid */}
-                    <div className="flex-1">
-                        <h2 className="text-xl font-bold text-gray-800 mb-6 border-b border-gray-100 pb-2">Personal Information</h2>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                            {/* Contact Info */}
-                            <div>
-                                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Email Address</p>
-                                <p className="text-gray-800 font-medium">{displayEmail}</p>
-                            </div>
-                            <div>
-                                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Phone Number</p>
-                                <p className="text-gray-800 font-medium">{displayPhone}</p>
-                            </div>
-                            <div className="md:col-span-2">
-                                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Home Address</p>
-                                <p className="text-gray-800 font-medium">{displayAddress}</p>
-                            </div>
-
-                            {/* Demographics */}
-                            <div>
-                                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Gender</p>
-                                <p className="text-gray-800 font-medium capitalize">{displayGender}</p>
-                            </div>
-                            <div>
-                                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Marital Status</p>
-                                <p className="text-gray-800 font-medium capitalize">{displayMarital}</p>
-                            </div>
-                            <div>
-                                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Date of Birth</p>
-                                <p className="text-gray-800 font-medium">{displayDob}</p>
-                            </div>
-
-                            {/* Origin */}
-                            <div>
-                                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">State of Origin</p>
-                                <p className="text-gray-800 font-medium capitalize">{displayState}</p>
-                            </div>
-                            <div>
-                                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">LGA</p>
-                                <p className="text-gray-800 font-medium capitalize">{displayLga}</p>
-                            </div>
-
-                            {/* Church Data */}
-                            <div>
-                                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Date of Baptism</p>
-                                <p className="text-gray-800 font-medium">{displayBaptism}</p>
-                            </div>
-                            {member?.homeCongregation && (
-                                <div>
-                                    <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Home Congregation</p>
-                                    <p className="text-gray-800 font-medium capitalize">{member.homeCongregation}</p>
-                                </div>
-                            )}
-                        </div>
+                    <label className="absolute bottom-0 right-0 w-7 h-7 bg-white text-primary rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-gray-100 transition">
+                      <FontAwesomeIcon icon={faCamera} className="text-xs" />
+                      <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+                    </label>
+                  </div>
+                  
+                  <div className="flex-1 text-center sm:text-left">
+                    <h1 className="text-2xl font-bold">
+                      {profile.firstName} {profile.lastName}
+                    </h1>
+                    <div className="flex sm:flex-row flex-col items-center gap-3 mt-1 justify-center sm:justify-start">
+                      <p className="text-blue-300 text-sm capitalize">
+                        {profile.homeCongregation} Congregation
+                      </p>
+                      <span className="bg-blue-400/20 text-blue-100 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                        {userRole}
+                      </span>
+                      {file && (
+                        <button onClick={handleUpload} className="bg-white text-primary px-3 py-1 text-xs rounded-full font-bold shadow-sm hover:bg-gray-50 transition ml-0 sm:ml-4">
+                          Upload New Image
+                        </button>
+                      )}
                     </div>
+                  </div>
+                </div>
+
+                {/* Info grid */}
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+                  <h2 className="text-primary font-bold text-lg mb-5">
+                    Personal Information
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <InfoRow
+                      label="Full Name"
+                      value={`${profile.firstName} ${profile.lastName}`}
+                    />
+                    <InfoRow label="Phone Number" value={profile.phone} />
+                    <InfoRow label="Email" value={profile.email} />
+                    <InfoRow label="Address" value={profile.address} />
+                    <InfoRow label="Date of Baptism" value={fmt(profile.dateBaptised)} />
+                    <InfoRow label="Date Joined" value={fmt(profile.dateJoined)} />
+                    <InfoRow
+                      label="Gender"
+                      value={<span className="capitalize">{profile.gender}</span>}
+                    />
+                    <InfoRow label="Home Congregation" value={profile.homeCongregation} />
+                    <InfoRow
+                      label="Marital Status"
+                      value={<span className="capitalize">{profile.maritalStatus}</span>}
+                    />
+                    <InfoRow label="Occupation" value={profile.occupation} />
+                    <InfoRow label="ID Card Number" value={profile.idCardNumber} />
+                    <InfoRow label="Ministries" value={profile.ministries?.join(", ")} />
+                  </div>
+                </div>
+
+                {/* Next of Kin */}
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+                  <h2 className="text-primary font-bold text-lg mb-5">
+                    Next of Kin Details
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <InfoRow label="Name" value={profile.nextOfKin?.name} />
+                    <InfoRow label="Phone" value={profile.nextOfKin?.phone} />
+                    <InfoRow label="Address" value={profile.nextOfKin?.address} />
+                  </div>
                 </div>
             </div>
+
+            {showEdit && (
+              <AddMemberModal
+                onClose={() => setShowEdit(false)}
+                onAdd={handleUpdate}
+                initialData={{
+                  ...profile,
+                  roles: user?.roles || ["MEMBER"],
+                  _id: user?._id || user?.id,
+                }}
+              />
+            )}
         </div>
     );
 };
