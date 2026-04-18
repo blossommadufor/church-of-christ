@@ -15,6 +15,14 @@ const MINISTRIES = [
     "secretariate", "registry", "songs committee"
 ];
 
+const PERMISSIONS = [
+    { value: "DO_ALL",          label: "Super Admin (All Access)" },
+    { value: "ATTENDANCE_VIEW", label: "View Attendance" },
+    { value: "ATTENDANCE_MARK", label: "Mark Attendance" },
+    { value: "FINANCE_VIEW",    label: "View Finance" },
+    { value: "FINANCE_ADD",     label: "Add Finance Records" },
+];
+
 const field = (label, children, required) => (
     <div>
         <label className="block text-sm font-semibold text-gray-600 mb-1.5">
@@ -26,7 +34,7 @@ const field = (label, children, required) => (
 
 const inputCls = "w-full px-4 py-2.5 border border-gray-200 rounded-xl text-gray-700 outline-none focus:border-light focus:ring-2 focus:ring-light/20 transition text-base";
 
-const AddMemberModal = ({ onClose, onAdd, initialData }) => {
+const AddMemberModal = ({ onClose, onAdd, initialData, isAdminPortal = true }) => {
     // Exact matched payload structure based on API
     // Exact matched payload structure based on API
     const [form, setForm] = useState(() => {
@@ -46,7 +54,9 @@ const AddMemberModal = ({ onClose, onAdd, initialData }) => {
                 nextOfKinAddress: initialData.nextOfKin?.address || "",
                 nextOfKinRelationship: initialData.nextOfKin?.relationship || "",
                 ministries: initialData.ministries || [],
-                roles: initialData.roles || ["MEMBER"]
+                roles: initialData.roles || ["MEMBER"],
+                isActive: initialData.isActive ?? true,
+                permissions: initialData.permissions || [],
             };
         }
         return {
@@ -58,12 +68,17 @@ const AddMemberModal = ({ onClose, onAdd, initialData }) => {
             dateBaptised: "", dateJoined: "", address: "",
             ministries: [], houseFellowship: "Nyanya", occupation: "",
             homeCongregation: "Nyanya", roles: ["MEMBER"], idCardNumber: "",
+            isActive: true, permissions: [],
             nextOfKinName: "", nextOfKinPhone: "", nextOfKinAddress: "", nextOfKinRelationship: ""
         };
     });
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    // isAdmin: true if the member already has any permissions assigned
+    const [isAdmin, setIsAdmin] = useState(
+        () => (initialData?.permissions ?? []).length > 0
+    );
 
     // Dynamic naija states setup
     const nigerianStates = NaijaStates.states().map((st) => ({
@@ -105,6 +120,28 @@ const AddMemberModal = ({ onClose, onAdd, initialData }) => {
 
     const handleLgaChange = (selectedOption) => {
         setForm(f => ({ ...f, lga: selectedOption ? selectedOption.value : "" }));
+    };
+
+    const handleAdminToggle = (checked) => {
+        setIsAdmin(checked);
+        setForm(f => ({
+            ...f,
+            roles: checked ? ["MEMBER", "ADMIN"] : ["MEMBER"],
+            permissions: checked ? (f.permissions ?? []) : [],
+        }));
+    };
+
+    const handlePermissionToggle = (perm) => {
+        setForm(f => {
+            const current = f.permissions ?? [];
+            const exists = current.includes(perm);
+            return {
+                ...f,
+                permissions: exists
+                    ? current.filter(p => p !== perm)
+                    : [...current, perm],
+            };
+        });
     };
 
     const handleSubmit = async (e) => {
@@ -237,6 +274,12 @@ const AddMemberModal = ({ onClose, onAdd, initialData }) => {
                                 </select>
                             ))}
                             {field("ID Card Number", <input className={inputCls} placeholder="Enter ID number" value={form.idCardNumber} onChange={set("idCardNumber")} />)}
+                            {isAdminPortal && field("Member Status", (
+                                <select className={inputCls} value={form.isActive ? "active" : "inactive"} onChange={(e) => setForm(f => ({ ...f, isActive: e.target.value === "active" }))}>
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            ))}
                         </div>
                     </div>
 
@@ -276,6 +319,56 @@ const AddMemberModal = ({ onClose, onAdd, initialData }) => {
                             {field("Next of Kin Address", <input className={inputCls} placeholder="Enter address" value={form.nextOfKinAddress} onChange={set("nextOfKinAddress")} />)}
                         </div>
                     </div>
+
+                    {/* Admin Access — admin portal only */}
+                    {isAdminPortal && (
+                    <div className="border border-gray-100 rounded-2xl p-5 bg-gray-50">
+                        <label className="flex items-center gap-3 cursor-pointer select-none">
+                            <div className="relative">
+                                <input
+                                    type="checkbox"
+                                    className="sr-only"
+                                    checked={isAdmin}
+                                    onChange={(e) => handleAdminToggle(e.target.checked)}
+                                />
+                                <div className={`w-11 h-6 rounded-full transition-colors ${isAdmin ? "bg-primary" : "bg-gray-300"}`} />
+                                <div className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white shadow transition-transform ${isAdmin ? "translate-x-5" : "translate-x-0"}`} />
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-gray-700">Grant Admin Access</p>
+                                <p className="text-xs text-gray-400 mt-0.5">This member will have an admin role with selected permissions</p>
+                            </div>
+                        </label>
+
+                        {isAdmin && (
+                            <div className="mt-5">
+                                <p className="text-sm font-semibold text-gray-600 mb-3">Select Permissions</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {PERMISSIONS.map(({ value, label }) => {
+                                        const selected = (form.permissions ?? []).includes(value);
+                                        return (
+                                            <button
+                                                type="button"
+                                                key={value}
+                                                onClick={() => handlePermissionToggle(value)}
+                                                className={`px-3 py-1.5 rounded-full border text-sm transition-colors ${
+                                                    selected
+                                                        ? "bg-primary border-primary text-white"
+                                                        : "bg-white border-gray-300 text-gray-600 hover:border-gray-400"
+                                                }`}
+                                            >
+                                                {label}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                                {(form.permissions ?? []).length === 0 && (
+                                    <p className="text-xs text-orange-500 mt-3 font-medium">⚠ No permissions selected — admin will have no access rights.</p>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                    )}
 
                     {error && <p className="text-red-500 text-sm font-medium mt-2 bg-red-50 p-3 rounded-lg border border-red-100">{error}</p>}
 

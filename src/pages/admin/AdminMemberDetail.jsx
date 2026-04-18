@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
@@ -7,6 +7,7 @@ import {
   faTimesCircle,
   faEdit,
   faCamera,
+  faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import AddMemberModal from "../../components/admin/AddMemberModal";
 import { adminServices } from "../../services/adminServices";
@@ -23,52 +24,45 @@ const InfoRow = ({ label, value }) => (
 const fmt = (d) =>
   d
     ? new Date(d).toLocaleDateString("en-NG", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
     : "—";
 
 const AdminMemberDetail = () => {
-  const location = useLocation();
   const { id } = useParams();
 
-  const [user, setUser] = useState(location.state?.user || null);
+  const [member, setMember] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState("");
+
+  const [showEdit, setShowEdit] = useState(false);
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
 
   useEffect(() => {
     const fetchMember = async () => {
       if (!id) return;
+      setIsLoading(true);
+      setFetchError("");
       try {
         const res = await adminServices.getMember(id);
-        console.log("[API Get Single Member Response]:", res);
+        // API returns the member object directly at res.data
         if (res?.data) {
-          // Update state with fresh fetched data
-          setUser(res.data);
+          setMember(res.data);
+        } else {
+          setFetchError("Member not found.");
         }
       } catch (err) {
-        console.error("Error fetching single member details:", err);
+        console.error("Error fetching member details:", err);
+        setFetchError("Failed to load member details. Please try again.");
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchMember();
   }, [id]);
-
-  const userRole = user?.role || "MEMBER";
-  const profile = user?.member || {};
-
-  // Fallbacks if no attendance data exists yet
-  const rawAttendance = profile.attendance || [];
-
-  const years = [
-    ...new Set(rawAttendance.map((a) => a.date.split(",")[1]?.trim())),
-  ].sort((a, b) => b - a);
-
-  const [year, setYear] = useState(years[0] || "All");
-  const [showEdit, setShowEdit] = useState(false);
-  
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null);
-
-  const currentPic = preview || profile?.profilePicture;
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
@@ -78,20 +72,58 @@ const AdminMemberDetail = () => {
     }
   };
 
-  const handleUpload = () => {
-    // UI-only for now
-    console.log("Admin side: File ready for API upload ->", file);
-    setFile(null);
+  const [uploadingPic, setUploadingPic] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+
+  const handleUpload = async () => {
+    if (!file) return;
+    setUploadingPic(true);
+    setUploadError("");
+    try {
+      const formData = new FormData();
+      formData.append("profilePicture", file);
+      await adminServices.updateMember(member._id, formData);
+      // Refresh member to get new picture URL
+      const res = await adminServices.getMember(id);
+      if (res?.data) setMember(res.data);
+      setFile(null);
+      setPreview(null);
+    } catch (err) {
+      console.error("Upload failed:", err);
+      setUploadError("Failed to upload picture. Please try again.");
+    } finally {
+      setUploadingPic(false);
+    }
   };
 
-  if (!user)
+  const handleUpdate = async (updatedData) => {
+    try {
+      await adminServices.updateMember(member._id, updatedData);
+      // Refresh from API after update
+      const res = await adminServices.getMember(id);
+      if (res?.data) setMember(res.data);
+      setShowEdit(false);
+    } catch (err) {
+      console.error("Failed to update:", err);
+    }
+  };
+
+  // ── Loading / error states ─────────────────────────────────────────────────
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 gap-3">
+        <FontAwesomeIcon icon={faSpinner} className="text-primary text-3xl animate-spin" />
+        <p className="text-gray-400 font-medium">Loading member details…</p>
+      </div>
+    );
+  }
+
+  if (fetchError || !member) {
     return (
       <div className="text-center py-24">
         <p className="text-gray-400 text-xl font-semibold">
-          Member details not available.
-        </p>
-        <p className="text-gray-500 text-sm mt-2">
-          Please navigate here from the Members list.
+          {fetchError || "Member not found."}
         </p>
         <Link
           to="/admin/members"
@@ -101,29 +133,55 @@ const AdminMemberDetail = () => {
         </Link>
       </div>
     );
+  }
 
-  const handleUpdate = async (updatedData) => {
-    try {
-      await adminServices.updateMember(user._id, updatedData);
-      console.log("Successfully updated via API.");
-      setShowEdit(false);
-      // Dynamic refresh logic here eventually
-    } catch (err) {
-      console.error("Failed to update:", err);
-    }
-  };
+  // ── Derived data ───────────────────────────────────────────────────────────
+
+  const currentPic = preview || member.profilePicture;
+  const rawAttendance = member.attendance || [];
+
+  const years = [
+    ...new Set(rawAttendance.map((a) => a.date?.split(",")[1]?.trim()).filter(Boolean)),
+  ].sort((a, b) => b - a);
+
+  // ── Render ─────────────────────────────────────────────────────────────────
+
+  return (
+    <MemberDetailView
+      member={member}
+      currentPic={currentPic}
+      file={file}
+      uploadingPic={uploadingPic}
+      uploadError={uploadError}
+      rawAttendance={rawAttendance}
+      years={years}
+      showEdit={showEdit}
+      setShowEdit={setShowEdit}
+      handleFileChange={handleFileChange}
+      handleUpload={handleUpload}
+      handleUpdate={handleUpdate}
+    />
+  );
+};
+
+// ── Inner view component (keeps hook rules clean) ──────────────────────────
+
+const MemberDetailView = ({
+  member, currentPic, file, uploadingPic, uploadError, rawAttendance, years,
+  showEdit, setShowEdit, handleFileChange, handleUpload, handleUpdate,
+}) => {
+  const [year, setYear] = useState(years[0] || "All");
 
   const attendance =
     year === "All"
       ? rawAttendance
-      : rawAttendance.filter((a) => a.date.includes(year));
-  const present = attendance.filter((a) => a.status === "Present").length;
-  const missed = attendance.filter((a) => a.status === "Absent").length;
-  const sick = attendance.filter((a) => a.status === "Sick").length;
+      : rawAttendance.filter((a) => a.date?.includes(year));
+
+  const present  = attendance.filter((a) => a.status === "Present").length;
+  const missed   = attendance.filter((a) => a.status === "Absent").length;
+  const sick     = attendance.filter((a) => a.status === "Sick").length;
   const traveled = attendance.filter((a) => a.status === "Traveled").length;
 
-  // Using purely present for calculation right now, but total is all items recorded
-  // You could interpret 'Traveled' and 'Sick' as excusable absences, but here is base pct
   const pct = attendance.length
     ? Math.round((present / attendance.length) * 100)
     : 0;
@@ -153,7 +211,7 @@ const AdminMemberDetail = () => {
             {currentPic ? (
               <img src={currentPic} alt="Profile" className="w-full h-full object-cover" />
             ) : (
-              profile.firstName?.charAt(0) || "M"
+              member.firstName?.charAt(0) || "M"
             )}
           </div>
           <label className="absolute bottom-0 right-0 w-7 h-7 bg-white text-primary rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-gray-100 transition">
@@ -161,66 +219,77 @@ const AdminMemberDetail = () => {
             <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
           </label>
         </div>
-        
-        <div className="flex-1 text-center sm:text-left">
+
+          <div className="flex-1 text-center sm:text-left">
           <h1 className="text-2xl font-bold">
-            {profile.firstName} {profile.lastName}
+            {member.prefix && <span className="opacity-70 mr-1">{member.prefix}.</span>}
+            {member.firstName} {member.lastName}
           </h1>
           <div className="flex sm:flex-row flex-col items-center gap-3 mt-1 justify-center sm:justify-start">
-            <p className="text-blue-300 text-sm capitalize">
-              {profile.homeCongregation} Congregation
-            </p>
-            <span className="bg-blue-400/20 text-blue-100 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-              {userRole}
+            <p className="text-blue-300 capitalize">ID: {member.idCardNumber}</p>
+            <span className="text-gray-500">|</span>
+            <p className="text-blue-300">{member.phone}</p>
+            <span className="text-gray-500">|</span>
+            {/* Role pill: admin if permissions exist */}
+            {(member.permissions?.length > 0) ? (
+              <span className="bg-purple-400/30 text-purple-100 text-xs font-bold px-3 py-0.5 rounded-full uppercase tracking-wider">
+                Admin
+              </span>
+            ) : (
+              <span className="bg-blue-400/20 text-blue-100 text-xs font-bold px-3 py-0.5 rounded-full uppercase tracking-wider">
+                Member
+              </span>
+            )}
+            {/* Active / Inactive status */}
+            <span className={`text-xs font-bold px-3 py-0.5 rounded-full uppercase tracking-wider ${
+              member.isActive !== false
+                ? "bg-green-400/20 text-green-200"
+                : "bg-red-400/20 text-red-200"
+            }`}>
+              {member.isActive !== false ? "Active" : "Inactive"}
             </span>
             {file && (
-              <button onClick={handleUpload} className="bg-white text-primary px-3 py-1 text-xs rounded-full font-bold shadow-sm hover:bg-gray-50 transition ml-0 sm:ml-4">
-                Upload New Image
+              <button
+                onClick={handleUpload}
+                disabled={uploadingPic}
+                className="bg-white text-primary px-3 py-1 text-xs rounded-full font-bold shadow-sm hover:bg-gray-50 transition ml-0 sm:ml-4 disabled:opacity-60"
+              >
+                {uploadingPic ? "Uploading…" : "Upload Photo"}
               </button>
             )}
           </div>
+          {uploadError && (
+            <p className="text-red-300 text-xs mt-2 font-medium">{uploadError}</p>
+          )}
         </div>
       </div>
 
       {/* Info grid */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-        <h2 className="text-primary font-bold text-lg mb-5">
-          Personal Information
-        </h2>
+        <h2 className="text-primary font-bold text-lg mb-5">Personal Information</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <InfoRow
-            label="Full Name"
-            value={`${profile.firstName} ${profile.lastName}`}
-          />
-          <InfoRow label="Phone Number" value={profile.phone} />
-          <InfoRow label="Email" value={profile.email} />
-          <InfoRow label="Address" value={profile.address} />
-          <InfoRow label="Date of Baptism" value={fmt(profile.dateBaptised)} />
-          <InfoRow label="Date Joined" value={fmt(profile.dateJoined)} />
-          <InfoRow
-            label="Gender"
-            value={<span className="capitalize">{profile.gender}</span>}
-          />
-          <InfoRow label="Home Congregation" value={profile.homeCongregation} />
-          <InfoRow
-            label="Marital Status"
-            value={<span className="capitalize">{profile.maritalStatus}</span>}
-          />
-          <InfoRow label="Occupation" value={profile.occupation} />
-          <InfoRow label="ID Card Number" value={profile.idCardNumber} />
-          <InfoRow label="Ministries" value={profile.ministries?.join(", ")} />
+          <InfoRow label="Full Name" value={`${member.firstName} ${member.lastName}`} />
+          <InfoRow label="Phone Number" value={member.phone} />
+          <InfoRow label="Email" value={member.email} />
+          <InfoRow label="Address" value={member.address} />
+          <InfoRow label="Date of Baptism" value={fmt(member.dateBaptised)} />
+          <InfoRow label="Date Joined" value={fmt(member.dateJoined)} />
+          <InfoRow label="Gender" value={<span className="capitalize">{member.gender}</span>} />
+          <InfoRow label="Home Congregation" value={member.homeCongregation} />
+          <InfoRow label="Marital Status" value={<span className="capitalize">{member.maritalStatus}</span>} />
+          <InfoRow label="Occupation" value={member.occupation} />
+          <InfoRow label="ID Card Number" value={member.idCardNumber} />
+          <InfoRow label="Ministries" value={member.ministries?.join(", ")} />
         </div>
       </div>
 
       {/* Next of Kin */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-        <h2 className="text-primary font-bold text-lg mb-5">
-          Next of Kin Details
-        </h2>
+        <h2 className="text-primary font-bold text-lg mb-5">Next of Kin Details</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <InfoRow label="Name" value={profile.nextOfKin?.name} />
-          <InfoRow label="Phone" value={profile.nextOfKin?.phone} />
-          <InfoRow label="Address" value={profile.nextOfKin?.address} />
+          <InfoRow label="Name" value={member.nextOfKin?.name} />
+          <InfoRow label="Phone" value={member.nextOfKin?.phone} />
+          <InfoRow label="Address" value={member.nextOfKin?.address} />
         </div>
       </div>
 
@@ -228,14 +297,10 @@ const AdminMemberDetail = () => {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h2 className="text-primary font-bold text-lg">
-              Attendance History
-            </h2>
+            <h2 className="text-primary font-bold text-lg">Attendance History</h2>
             <p className="text-gray-500 text-sm mt-0.5">
               {present} present · {missed} absent ·{" "}
-              <span
-                className={`font-bold ${pct >= 75 ? "text-green-500" : "text-orange-400"}`}
-              >
+              <span className={`font-bold ${pct >= 75 ? "text-green-500" : "text-orange-400"}`}>
                 {pct}% attendance
               </span>
             </p>
@@ -246,9 +311,7 @@ const AdminMemberDetail = () => {
             className="px-4 py-2 border border-gray-200 rounded-xl text-gray-600 text-sm font-semibold outline-none focus:border-light transition"
           >
             <option value="All">All Years</option>
-            {years.map((y) => (
-              <option key={y}>{y}</option>
-            ))}
+            {years.map((y) => <option key={y}>{y}</option>)}
           </select>
         </div>
 
@@ -272,34 +335,24 @@ const AdminMemberDetail = () => {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <th className="text-left text-gray-500 font-semibold px-5 py-3">
-                  Date
-                </th>
-                <th className="text-left text-gray-500 font-semibold px-5 py-3">
-                  Status
-                </th>
+                <th className="text-left text-gray-500 font-semibold px-5 py-3">Date</th>
+                <th className="text-left text-gray-500 font-semibold px-5 py-3">Status</th>
               </tr>
             </thead>
             <tbody>
               {attendance.map((a, i) => (
-                <tr
-                  key={i}
-                  className="border-b border-gray-50 hover:bg-gray-50 transition"
-                >
-                  <td className="px-5 py-3 text-gray-700 font-medium">
-                    {a.date}
-                  </td>
+                <tr key={i} className="border-b border-gray-50 hover:bg-gray-50 transition">
+                  <td className="px-5 py-3 text-gray-700 font-medium">{a.date}</td>
                   <td className="px-5 py-3">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-bold ${
-                        a.status === "Present"
-                          ? "bg-green-100 text-green-700"
-                          : a.status === "Sick"
-                            ? "bg-orange-100 text-orange-600"
-                            : a.status === "Traveled"
-                              ? "bg-blue-100 text-blue-600"
-                              : "bg-red-100 text-red-400"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-xs font-bold ${a.status === "Present"
+                        ? "bg-green-100 text-green-700"
+                        : a.status === "Sick"
+                          ? "bg-orange-100 text-orange-600"
+                          : a.status === "Traveled"
+                            ? "bg-blue-100 text-blue-600"
+                            : "bg-red-100 text-red-400"
+                        }`}
                     >
                       {a.status}
                     </span>
@@ -317,14 +370,15 @@ const AdminMemberDetail = () => {
           </table>
         </div>
       </div>
+
       {showEdit && (
         <AddMemberModal
           onClose={() => setShowEdit(false)}
           onAdd={handleUpdate}
           initialData={{
-            ...profile,
-            roles: user.roles || ["MEMBER"],
-            _id: user._id || user.id,
+            ...member,
+            roles: member.roles || ["MEMBER"],
+            _id: member._id,
           }}
         />
       )}

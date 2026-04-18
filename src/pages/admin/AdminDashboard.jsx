@@ -488,7 +488,7 @@ const AdminDashboard = () => {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             <SummaryCard
               icon={faUsers}
               label="Total Members"
@@ -497,10 +497,17 @@ const AdminDashboard = () => {
             />
             <SummaryCard
               icon={faCheckCircle}
-              label="Total Attendance"
-              value={summary.totalAttendance}
+              label="Active Members"
+              value={summary.totalActiveMembers}
               color="bg-green-500"
               textColor="text-green-600"
+            />
+            <SummaryCard
+              icon={faCheckCircle}
+              label="Total Attendance"
+              value={summary.totalAttendance}
+              color="bg-purple-500"
+              textColor="text-purple-600"
             />
             <SummaryCard
               icon={faTimesCircle}

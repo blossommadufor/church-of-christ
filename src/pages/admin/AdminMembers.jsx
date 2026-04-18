@@ -142,13 +142,7 @@ const AdminMembers = () => {
             {totalMembers} registered members
           </p>
         </div>
-        <div>
-          <button
-            onClick={handleExport}
-            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 font-semibold rounded-xl shadow-sm hover:border-gray-300 transition text-base"
-          >
-            Export to Excel
-          </button>
+        <div className="flex gap-3">
           <button
             onClick={() => setShowUpload(true)}
             className="flex items-center gap-2 px-4 py-2.5 border-2 border-light text-light font-semibold rounded-xl hover:bg-light hover:text-white transition text-base"
@@ -164,61 +158,73 @@ const AdminMembers = () => {
         </div>
       </div>
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-6">
-        <div className="flex items-stretch gap-0 max-w-2xl">
-          {/* Search Field Dropdown */}
-          <div className="relative flex-shrink-0">
-            <button
-              onClick={() => setDropdownOpen((o) => !o)}
-              className="flex items-center gap-2 h-full px-4 py-3 bg-gray-50 border border-gray-200 border-r-0 rounded-l-xl text-sm font-semibold text-gray-700 hover:bg-gray-100 transition whitespace-nowrap"
-            >
-              {searchField.label}
-              <FontAwesomeIcon
-                icon={faChevronDown}
-                className={`text-gray-400 text-xs transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
-              />
-            </button>
-            {dropdownOpen && (
-              <div className="absolute left-0 top-full mt-1 w-44 bg-white border border-gray-100 rounded-xl shadow-xl z-20 overflow-hidden py-1">
-                {SEARCH_FIELDS.map((f) => (
-                  <button
-                    key={f.value}
-                    onClick={() => handleFieldSelect(f)}
-                    className={`w-full text-left px-4 py-2.5 text-sm font-medium transition hover:bg-gray-50 ${searchField.value === f.value
-                        ? "text-light font-semibold bg-light/5"
-                        : "text-gray-700"
-                      }`}
-                  >
-                    {f.label}
-                  </button>
-                ))}
+        <div className="flex items-center justify-between gap-3">
+          <div className="w-full max-w-3xl">
+            {/* Search field + input */}
+            <div className="flex items-stretch gap-0 flex-1 max-w-2xl">
+              {/* Search Field Dropdown */}
+              <div className="relative flex-shrink-0">
+                <button
+                  onClick={() => setDropdownOpen((o) => !o)}
+                  className="flex items-center gap-2 h-full px-4 py-3 bg-gray-50 border border-gray-200 border-r-0 rounded-l-xl text-sm font-semibold text-gray-700 hover:bg-gray-100 transition whitespace-nowrap"
+                >
+                  {searchField.label}
+                  <FontAwesomeIcon
+                    icon={faChevronDown}
+                    className={`text-gray-400 text-xs transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+                {dropdownOpen && (
+                  <div className="absolute left-0 top-full mt-1 w-44 bg-white border border-gray-100 rounded-xl shadow-xl z-20 overflow-hidden py-1">
+                    {SEARCH_FIELDS.map((f) => (
+                      <button
+                        key={f.value}
+                        onClick={() => handleFieldSelect(f)}
+                        className={`w-full text-left px-4 py-2.5 text-sm font-medium transition hover:bg-gray-50 ${searchField.value === f.value
+                          ? "text-light font-semibold bg-light/5"
+                          : "text-gray-700"
+                          }`}
+                      >
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          {/* Search Input */}
-          <div className="relative flex-1">
-            <FontAwesomeIcon
-              icon={faMagnifyingGlass}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-            />
-            <input
-              type="text"
-              placeholder={`Search by ${searchField.label.toLowerCase()}…`}
-              value={searchValue}
-              onChange={(e) => handleSearchInput(e.target.value)}
-              className="w-full h-full pl-11 pr-4 py-3 border border-gray-200 rounded-r-xl text-gray-700 outline-none focus:border-light focus:ring-2 focus:ring-light/20 transition text-sm"
-            />
-          </div>
+              {/* Search Input */}
+              <div className="relative flex-1">
+                <FontAwesomeIcon
+                  icon={faMagnifyingGlass}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                />
+                <input
+                  type="text"
+                  placeholder={`Search by ${searchField.label.toLowerCase()}…`}
+                  value={searchValue}
+                  onChange={(e) => handleSearchInput(e.target.value)}
+                  className="w-full h-full pl-11 pr-4 py-3 border border-gray-200 rounded-r-xl text-gray-700 outline-none focus:border-light focus:ring-2 focus:ring-light/20 transition text-sm"
+                />
+              </div>
+            </div></div>
+
+          {/* Export — beside search */}
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 font-semibold rounded-xl shadow-sm hover:border-gray-300 transition text-sm whitespace-nowrap"
+          >
+            Export to Excel
+          </button>
         </div>
       </div>
 
       {/* Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                {["Name", "Phone", "Email", "Role", "Gender", "Actions"].map(
+                {["ID", "Name", "Phone", "Email", "Role", "Actions"].map(
                   (h) => (
                     <th
                       key={h}
@@ -255,33 +261,26 @@ const AdminMembers = () => {
                   return (
                     <tr
                       key={user._id}
-                      className="border-b border-gray-50 hover:bg-gray-50 transition"
+                      className="border-b border-gray-50 hover:bg-gray-50 transition h-16"
                     >
                       <td className="px-5 py-4 font-semibold text-primary whitespace-nowrap">
-                        <span className="text-gray-400 font-bold text-xs mr-2">{m.prefix || (m.gender?.toLowerCase() === "female" ? "SIS." : "BRO.")}</span>
+                        {user.idCardNumber}
+                      </td>
+                      <td className="px-5 py-4 font-semibold text-primary whitespace-nowrap">
+                        <span className="mr-2">{m.prefix || (m.gender?.toLowerCase() === "female" ? "Sis." : "Bro.")}</span>
                         {m.firstName} {m.lastName}
                       </td>
                       <td className="px-5 py-4 text-gray-600 whitespace-nowrap">
-                        {m.phone}
+                        {m.phone || "N/A"}
                       </td>
-                      <td className="px-5 py-4 text-gray-600">{m.email}</td>
+                      <td className="px-5 py-4 text-gray-600">{m.email || "N/A"}</td>
                       <td className="px-5 py-4 text-xs font-bold text-gray-500 uppercase">
-                        {user.role}
-                      </td>
-                      <td className="px-5 py-4">
-                        <span
-                          className={`capitalize px-3 py-1 rounded-full text-xs font-bold ${m.gender?.toLowerCase() === "female"
-                              ? "bg-pink-100 text-pink-600"
-                              : "bg-blue-100 text-blue-600"
-                            }`}
-                        >
-                          {m.gender || "—"}
-                        </span>
+                        {user.role || "N/A"}
                       </td>
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-2">
                           <Link
-                            to={`/admin/members/${user._id}`}
+                            to={`/admin/members/${user.member._id}`}
                             state={{ user }}
                             className="p-2 rounded-lg text-light hover:bg-light/10 transition"
                             title="View"
