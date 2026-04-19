@@ -20,7 +20,7 @@ const Hero = () => {
     <div
       id="home"
       className="relative h-screen min-h-[700px] bg-top bg-cover bg-no-repeat flex items-center justify-center overflow-hidden pt-20"
-      style={{ backgroundImage: "url(/assets/hero.jpg)" }}
+      style={{ backgroundImage: "url(/assets/church4.png)" }}
     >
       {/* Overlay */}
       <div className="absolute inset-0 bg-[rgba(15,20,50,0.72)]" />

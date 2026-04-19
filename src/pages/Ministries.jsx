@@ -35,7 +35,7 @@ const MINISTRIES = [
   {
     name: "Welfare",
     description: "Caring for the physical and emotional needs of our church family.",
-    image: "/assets/question.jpg"
+    image: "/assets/welfare.jpg"
   }
 ];
 
@@ -103,7 +103,7 @@ const Ministries = () => {
                 />
 
                 {/* Dark Overlay Gradient - Fades out slightly on hover */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 transition-colors duration-500 group-hover:from-black/80 group-hover:via-black/20 group-hover:to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-colors duration-500 group-hover:from-black/90 group-hover:via-black/40 group-hover:to-black/10" />
 
                 {/* Content block - bottom left */}
                 <div className="absolute bottom-0 left-0 w-full p-6 text-white text-left transform translate-y-2 group-hover:translate-y-0 transition-all duration-500">

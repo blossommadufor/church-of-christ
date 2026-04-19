@@ -11,8 +11,10 @@ import {
   faChevronDown,
   faCalendarDays,
   faXmark,
+  faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 import { adminServices } from "../../services/adminServices";
+import LocationCaptureModal from "../../components/admin/LocationCaptureModal";
 import { formatDate, formatMonth } from "../../utils/analyticsUtils";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -304,6 +306,7 @@ const AdminDashboard = () => {
   const [filter, setFilter] = useState({ preset: "year" });
   const [analytics, setAnalytics] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -472,8 +475,22 @@ const AdminDashboard = () => {
             Attendance analytics for the congregation.
           </p>
         </div>
-        <FilterDropdown filter={filter} onChange={setFilter} />
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsLocationModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-semibold text-gray-700 shadow-sm hover:border-primary hover:text-primary transition"
+          >
+            <FontAwesomeIcon icon={faLocationDot} className="text-primary text-xs" />
+            Set Location
+          </button>
+          <FilterDropdown filter={filter} onChange={setFilter} />
+        </div>
       </div>
+
+      <LocationCaptureModal
+        isOpen={isLocationModalOpen}
+        onClose={() => setIsLocationModalOpen(false)}
+      />
 
       {/* ── Summary Cards ── */}
       {isLoading ? (

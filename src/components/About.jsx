@@ -3,22 +3,22 @@ import { motion } from "framer-motion";
 
 const slides = [
   {
-    img: "/assets/slide1.jpg",
+    img: "/assets/church1.png",
     text: "And he said unto them, Go ye into all the world, and preach the gospel to every creature.",
     passage: "~ Mark 16:15",
   },
   {
-    img: "/assets/slide2.jpg",
+    img: "/assets/church2.png",
     text: "But seek ye first the kingdom of God, and his righteousness; and all these things shall be added unto you.",
     passage: "~ Matthew 6:33",
   },
   {
-    img: "/assets/slide3.jpg",
+    img: "/assets/church3.png",
     text: "I am the Lord, and there is no other; apart from Me there is no God",
     passage: "~ Isaiah 45:5",
   },
   {
-    img: "/assets/hero.jpg",
+    img: "/assets/church4.png",
     text: "Be strong and of a good courage; be not afraid, neither be thou dismayed: for the Lord thy God is with thee whithersoever thou goest.",
     passage: "~ Joshua 1:9",
   },

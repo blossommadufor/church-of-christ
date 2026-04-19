@@ -63,7 +63,7 @@ const AboutWhoWeAre = () => {
                     >
                         <div className="overflow-hidden rounded-2xl shadow-xl">
                             <img
-                                src="/assets/hero2.jpeg"
+                                src="/assets/church4.png"
                                 alt="Church of Christ Nyanya"
                                 className="w-full h-[420px] object-cover hover:scale-105 transition-transform duration-700"
                             />

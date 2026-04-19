@@ -16,7 +16,7 @@ const LeadershipItem = ({ img, name, index }) => (
         transition={{ duration: 0.5, delay: index * 0.08 }}
         viewport={{ once: true }}
     >
-        <div className="w-[200px] h-[200px] rounded-full overflow-hidden mb-4 shadow-md">
+        <div className="w-[230px] h-[230px] rounded-full overflow-hidden mb-4 shadow-md">
             <img
                 src={img}
                 alt={name}
@@ -40,7 +40,7 @@ const deacons = [
     { name: "Bro. Felix Ajunwa", img: "/assets/ajunwa.png" },
     { name: "Bro. George Attah", img: "/assets/attah.png" },
     { name: "Bro. Emana Bassey", img: "/assets/emana.png" },
-    { name: "Bro. Donald Esiet", img: "/assets/hero.jpg" },
+    { name: "Bro. Donald Esiet", img: "/assets/welfare.jpg" },
 ];
 
 const AboutLeaders = () => {
@@ -59,16 +59,19 @@ const AboutLeaders = () => {
                         </h2>
                     </div>
 
-                    {/* 3 top */}
-                    <div className="max-w-[640px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 justify-items-center mb-12">
+                    {/* <div className="max-w-[800px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center mb-12">
                         {elders.slice(0, 3).map((elder, i) => (
                             <LeadershipItem key={i} name={elder.name} img={elder.img} index={i} />
                         ))}
                     </div>
-                    {/* 2 bottom — centred */}
                     <div className="flex justify-center gap-5 flex-wrap">
                         {elders.slice(3).map((elder, i) => (
                             <LeadershipItem key={i} name={elder.name} img={elder.img} index={i + 3} />
+                        ))}
+                    </div> */}
+                    <div className="max-w-[800px] mx-auto flex items-center justify-center flex-wrap gap-5 justify-items-center mb-12">
+                        {elders.map((elder, i) => (
+                            <LeadershipItem key={i} name={elder.name} img={elder.img} index={i} />
                         ))}
                     </div>
                 </div>
@@ -83,16 +86,9 @@ const AboutLeaders = () => {
                             Meet the Deacons
                         </h2>
                     </div>
-                    {/* 3 top */}
-                    <div className="max-w-[640px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 justify-items-center mb-12">
-                        {deacons.slice(0, 3).map((deacon, i) => (
+                    <div className="max-w-[800px] mx-auto flex items-center justify-center flex-wrap gap-5 justify-items-center mb-12">
+                        {deacons.map((deacon, i) => (
                             <LeadershipItem key={i} name={deacon.name} img={deacon.img} index={i} />
-                        ))}
-                    </div>
-                    {/* 2 bottom — centred */}
-                    <div className="flex justify-center gap-5 flex-wrap">
-                        {deacons.slice(3).map((deacon, i) => (
-                            <LeadershipItem key={i} name={deacon.name} img={deacon.img} index={i + 3} />
                         ))}
                     </div>
                 </div>

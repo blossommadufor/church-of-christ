@@ -47,4 +47,8 @@ export const adminServices = {
     const response = await apiClient.get(`/attendance/get-absent-members-for-a-worship?date=${date}&serviceDay=Sunday&page=1`);
     return response.data;
   },
+  updateChurchLocation: async (payload) => {
+    const response = await apiClient.patch(`/member/update-church-location`, payload);
+    return response.data;
+  },
 };

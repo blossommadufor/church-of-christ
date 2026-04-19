@@ -14,7 +14,7 @@ const CTA = () => {
     return (
         <div
             className="relative overflow-hidden bg-cover bg-center bg-no-repeat py-28 lg:py-36"
-            style={{ backgroundImage: "url(/assets/question.jpg)" }}
+            style={{ backgroundImage: "url(/assets/church1.png)" }}
         >
             {/* Black overlay */}
             <div className="absolute inset-0 bg-black/75" />
