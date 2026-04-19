@@ -10,27 +10,27 @@ const MINISTRIES = [
   {
     name: "Evangelism",
     description: "Reaching out to our community with the good news of Christ.",
-    image: "/assets/slide1.jpg"
+    image: "/assets/preaching.jpg"
   },
   {
     name: "Sisters",
     description: "Empowering women through fellowship, study, and service.",
-    image: "/assets/slide2.jpg"
+    image: "/assets/sisters.jpg"
   },
   {
     name: "Youth",
     description: "Guiding the next generation of believers in faith and leadership.",
-    image: "/assets/slide3.jpg"
+    image: "/assets/youth.jpg"
   },
   {
     name: "Children",
     description: "Laying the biblical foundation for our youngest members.",
-    image: "/assets/hero.jpg"
+    image: "/assets/children.jpg"
   },
   {
     name: "Singing",
     description: "Leading the congregation in uplifting, a cappella praise.",
-    image: "/assets/sermons.jpg"
+    image: "/assets/singing.jpg"
   },
   {
     name: "Welfare",

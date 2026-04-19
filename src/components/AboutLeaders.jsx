@@ -28,18 +28,18 @@ const LeadershipItem = ({ img, name, index }) => (
 );
 
 const elders = [
-    { name: "Bro. Hart Emeribe", img: "/assets/hero.jpg" },
-    { name: "Bro. Jacob Achobe", img: "/assets/hero.jpg" },
-    { name: "Bro. Augustine Ohaju", img: "/assets/hero.jpg" },
-    { name: "Bro. Ntewo Bassey", img: "/assets/hero.jpg" },
-    { name: "Bro. Udoma Inyang", img: "/assets/hero.jpg" },
+    { name: "Bro. Hart Emeribe", img: "/assets/emeribe.png" },
+    { name: "Bro. Jacob Achobe", img: "/assets/achobe.png" },
+    { name: "Bro. Augustine Ohaju", img: "/assets/ohaju.png" },
+    { name: "Bro. Ntewo Bassey", img: "/assets/ntewo.png" },
+    { name: "Bro. Udoma Inyang", img: "/assets/udoma.png" },
 ];
 
 const deacons = [
-    { name: "Bro. Efiong Anwana", img: "/assets/hero.jpg" },
-    { name: "Bro. Felix Ajunwa", img: "/assets/hero.jpg" },
-    { name: "Bro. George Attah", img: "/assets/hero.jpg" },
-    { name: "Bro. Emana Bassey", img: "/assets/hero.jpg" },
+    { name: "Bro. Efiong Anwana", img: "/assets/anwana.png" },
+    { name: "Bro. Felix Ajunwa", img: "/assets/ajunwa.png" },
+    { name: "Bro. George Attah", img: "/assets/attah.png" },
+    { name: "Bro. Emana Bassey", img: "/assets/emana.png" },
     { name: "Bro. Donald Esiet", img: "/assets/hero.jpg" },
 ];
 
